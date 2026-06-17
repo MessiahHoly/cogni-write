@@ -6,3 +6,5 @@ export const authClient = createAuthClient({
     magicLinkClient()
   ]
 });
+
+export const { signIn, signUp, useSession } = createAuthClient()

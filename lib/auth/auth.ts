@@ -24,7 +24,7 @@ export const auth = betterAuth({
             from,
             to: email,
             subject: "Your Magic Link",
-            html: `<p>Click the link below to log in:</p><p><a href="${url}">Log In</a></p>`
+            html: `<p>Click the link below to sign in:</p><p><a href="${url}">Sign In</a></p>`
           })
 
           if (error) {

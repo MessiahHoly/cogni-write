@@ -42,7 +42,7 @@ export function SignInField() {
       <form onSubmit={handleSubmit}>
         <FieldGroup>
           <FieldSet>
-            <FieldLegend>Sign in</FieldLegend>
+            {/* <FieldLegend>Sign in</FieldLegend> */}
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">

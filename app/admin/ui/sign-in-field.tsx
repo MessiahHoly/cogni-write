@@ -18,9 +18,9 @@ export function SignInField() {
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
-    // Handle form submission logic here
     const { data, error } = await authClient.signIn.magicLink({
       email,
+      callbackURL: `/admin`,
     })
     if (data) {
       setMagicLinkSent(true)

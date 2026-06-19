@@ -9,15 +9,18 @@ import {
   FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Spinner } from "@/components/ui/spinner"
 import { authClient } from "@/lib/auth/auth-client"
 import { SubmitEvent, useState } from "react"
 
 export function SignInField() {
   const [email, setEmail] = useState("")
   const [magicLinkSent, setMagicLinkSent] = useState(false)
+  const [signingIn, setSigningIn] = useState(false)
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setSigningIn(true)
     const { data, error } = await authClient.signIn.magicLink({
       email,
       callbackURL: `/admin`,
@@ -25,6 +28,7 @@ export function SignInField() {
     if (data) {
       setMagicLinkSent(true)
     }
+    setSigningIn(false)
   }
 
   if (magicLinkSent) {
@@ -60,8 +64,15 @@ export function SignInField() {
             </FieldGroup>
           </FieldSet>
           <Field orientation="horizontal">
-            <Button type="submit">Sign in</Button>
             {/* <Button type="submit">Sign in</Button> */}
+            {signingIn ? (
+              <Button type="submit" disabled>
+                <Spinner data-icon="inline-start" />
+                Signing in...
+              </Button>
+            ) : (
+              <Button type="submit">Sign in</Button>
+            )}
             <Button variant="outline" type="button">
               Cancel
             </Button>

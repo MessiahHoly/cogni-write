@@ -7,9 +7,16 @@ export default async function Page() {
   if (!session) {
     return (
       <main className="p-4 flex flex-col items-center justify-center min-h-screen">
-        {/* <h1>Admin Page</h1>
-        <p>You must be signed in to view this page.</p> */}
         <SignInField />
+      </main>
+    );
+  }
+
+  if (session.user.email !== process.env.ADMIN) {
+    return (
+      <main className="p-4 flex flex-col items-center justify-center min-h-screen">
+        <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+        <p>You do not have permission to access this page.</p>
       </main>
     );
   }

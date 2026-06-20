@@ -7,7 +7,6 @@ import { CreateContentEngineSchema } from "../schemas/content-engine";
 
 export const createContentEngine = async (initialState: unknown, formData: FormData) => {
   const [session, contentEngine] = await Promise.all([getSession(), fetchContentEngine()])
-  // const session = await getSession()
 
   if (!session?.user.id || !isAdmin(session?.user.email || "")) {
     return { success: false, error: "Unauthorized" }
@@ -21,22 +20,21 @@ export const createContentEngine = async (initialState: unknown, formData: FormD
     return { success: false, error: validatedFields.error }
   }
 
-  if (validatedFields.data.topic === contentEngine?.topic) return { success: true }
+  const { data } = validatedFields
+
+  if (data.topic === contentEngine?.topic) return { success: true }
 
   try {
     if (contentEngine) {
-
+      const { createdById, topic, id } = contentEngine
+      await prisma.contentEngineArchive.create({ data: { topic, createdById, contentEngineId: id } })
+      await prisma.contentEngine.update({ data, where: { id } })
+      return { sucess: true }
     }
-    await prisma.contentEngine.create({
-      data: {
-        topic: validatedFields.data.topic,
-        createdById: session.user.id
-      },
-    })
-
+    await prisma.contentEngine.create({ data: { topic: validatedFields.data.topic, createdById: session.user.id } })
     return { sucess: true }
   } catch (error) {
     console.error(error)
-    return { success: false, error: "Failed to create content engine" }
+    return { success: false, error: "Failed to create/update content engine" }
   }
 };

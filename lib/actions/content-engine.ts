@@ -4,7 +4,7 @@ import { getSession, isAdmin } from "../auth/server";
 import { prisma } from "../data/prisma";
 import { CreateContentEngineSchema } from "../schemas/content-engine";
 
-export const createConentEngine = async (initialState: unknown, formData: FormData) => {
+export const createContentEngine = async (initialState: unknown, formData: FormData) => {
   const session = await getSession()
 
   if (!session?.user.id || !isAdmin(session?.user.email || "")) {

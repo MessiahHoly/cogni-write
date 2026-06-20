@@ -1,38 +1,46 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
+import {  createContentEngine } from "@/lib/actions/content-engine";
+import { useActionState } from "react";
 
 export default function ContentEngineField() {
+  const [state, action, pending] = useActionState(createContentEngine, null)
+
   return (
     <div className="w-full max-w-md">
-      <form onSubmit={handleSubmit}>
+      <form action={action}>
         <FieldGroup>
           <FieldSet>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">
-                  Email
+                <FieldLabel htmlFor="topic">
+                  Topic
                 </FieldLabel>
-                <Input
-                  id="email"
-                  placeholder="you@example.com"
+                <Textarea
+                  id="topic"
+                  placeholder="Enter a topic for your AI-generated posts..."
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  type="email"
+                  // value={email}
+                  // onChange={(e) => setEmail(e.target.value)}
+                  // type="text"
+                  name="topic"
                 />
               </Field>
             </FieldGroup>
           </FieldSet>
           <Field orientation="horizontal">
-            {signingIn ? (
+            {pending ? (
               <Button type="submit" disabled>
                 <Spinner data-icon="inline-start" />
-                Signing in...
+                Saving...
               </Button>
             ) : (
-              <Button type="submit">Sign in</Button>
+              <Button type="submit">Save</Button>
             )}
             <Button variant="outline" type="button">
               Cancel

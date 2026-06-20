@@ -5,7 +5,7 @@ import {
   Field,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
+  // FieldLegend,
   FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
@@ -46,7 +46,6 @@ export function SignInField() {
       <form onSubmit={handleSubmit}>
         <FieldGroup>
           <FieldSet>
-            {/* <FieldLegend>Sign in</FieldLegend> */}
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="email">
@@ -64,7 +63,6 @@ export function SignInField() {
             </FieldGroup>
           </FieldSet>
           <Field orientation="horizontal">
-            {/* <Button type="submit">Sign in</Button> */}
             {signingIn ? (
               <Button type="submit" disabled>
                 <Spinner data-icon="inline-start" />

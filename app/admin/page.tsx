@@ -1,9 +1,11 @@
 import { getSession } from "@/lib/auth/server";
 import { SignInField } from "./ui/sign-in-field";
 import ContentEngineField from "./ui/content-engine-field";
+import { fetchContentEngine } from "@/lib/data/content-engine";
 
 export default async function Page() {
-  const session = await getSession()
+  const [session, contentEngine] = await Promise.all([getSession(), fetchContentEngine()])
+  // const session = await getSession()
 
   if (!session) {
     return (
@@ -24,10 +26,7 @@ export default async function Page() {
 
   return (
     <main className="p-4 flex flex-col items-center justify-center min-h-screen">
-      {/* <h1>Admin Page</h1>
-      <p>Welcome to the admin dashboard.</p> */}
-      {/* <SignInField /> */}
-      <ContentEngineField />
+      <ContentEngineField contentEngine={contentEngine} />
     </main>
   );
 }

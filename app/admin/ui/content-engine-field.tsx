@@ -5,10 +5,11 @@ import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 // import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
-import {  createContentEngine } from "@/lib/actions/content-engine";
+import { ContentEngine } from "@/generated/prisma/client";
+import { createContentEngine } from "@/lib/actions/content-engine";
 import { useActionState } from "react";
 
-export default function ContentEngineField() {
+export default function ContentEngineField({ contentEngine }: { contentEngine: ContentEngine | null }) {
   const [state, action, pending] = useActionState(createContentEngine, null)
 
   return (
@@ -25,9 +26,7 @@ export default function ContentEngineField() {
                   id="topic"
                   placeholder="Enter a topic for your AI-generated posts..."
                   required
-                  // value={email}
-                  // onChange={(e) => setEmail(e.target.value)}
-                  // type="text"
+                  defaultValue={contentEngine?.topic}
                   name="topic"
                 />
               </Field>

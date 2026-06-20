@@ -28,6 +28,7 @@ export default function ContentEngineField({ contentEngine }: { contentEngine: C
                   defaultValue={contentEngine?.topic}
                   name="topic"
                 />
+                {state?.error && <p className="text-sm font-medium text-destructive">{state.error.toString()}</p>}
               </Field>
             </FieldGroup>
           </FieldSet>

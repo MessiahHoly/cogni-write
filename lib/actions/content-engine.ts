@@ -22,17 +22,18 @@ export const createContentEngine = async (initialState: unknown, formData: FormD
 
   const { data } = validatedFields
 
-  if (data.topic === contentEngine?.topic) return { success: true }
+  if (data.topic === contentEngine?.topic) return { success: false, error: "The topic has not changed" }
+  // if (data.topic === contentEngine?.topic) return { success: true }
 
   try {
     if (contentEngine) {
       const { createdById, topic, id } = contentEngine
       await prisma.contentEngineArchive.create({ data: { topic, createdById, contentEngineId: id } })
       await prisma.contentEngine.update({ data, where: { id } })
-      return { sucess: true }
+      return { success: true }
     }
     await prisma.contentEngine.create({ data: { topic: validatedFields.data.topic, createdById: session.user.id } })
-    return { sucess: true }
+    return { success: true }
   } catch (error) {
     console.error(error)
     return { success: false, error: "Failed to create/update content engine" }

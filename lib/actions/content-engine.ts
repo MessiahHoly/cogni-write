@@ -1,11 +1,12 @@
 'use server'
 
+import { revalidatePath } from "next/cache";
 import { getSession, isAdmin } from "../auth/server";
 import { fetchContentEngine } from "../data/content-engine";
 import { prisma } from "../data/prisma";
 import { CreateContentEngineSchema } from "../schemas/content-engine";
 
-export const createContentEngine = async (initialState: unknown, formData: FormData) => {
+export const createOrUpdateContentEngine = async (initialState: unknown, formData: FormData) => {
   const [session, contentEngine] = await Promise.all([getSession(), fetchContentEngine()])
 
   if (!session?.user.id || !isAdmin(session?.user.email || "")) {
@@ -23,7 +24,6 @@ export const createContentEngine = async (initialState: unknown, formData: FormD
   const { data } = validatedFields
 
   if (data.topic === contentEngine?.topic) return { success: false, error: "The topic has not changed" }
-  // if (data.topic === contentEngine?.topic) return { success: true }
 
   try {
     if (contentEngine) {
@@ -33,6 +33,7 @@ export const createContentEngine = async (initialState: unknown, formData: FormD
       return { success: true }
     }
     await prisma.contentEngine.create({ data: { topic: validatedFields.data.topic, createdById: session.user.id } })
+    revalidatePath('/admin')
     return { success: true }
   } catch (error) {
     console.error(error)

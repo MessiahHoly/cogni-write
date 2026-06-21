@@ -5,16 +5,16 @@ import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { ContentEngine } from "@/generated/prisma/client";
-import { createContentEngine } from "@/lib/actions/content-engine";
+import { createOrUpdateContentEngine } from "@/lib/actions/content-engine";
 import Link from "next/link";
 import { useActionState } from "react";
 
 export default function ContentEngineField({ contentEngine }: { contentEngine: ContentEngine | null }) {
-  const [state, action, pending] = useActionState(createContentEngine, null)
+  const [state, action, pending] = useActionState(createOrUpdateContentEngine, null)
 
   if (state?.success) return (
     <div className="flex flex-col gap-10">
-      <p>The topic updated successfully.</p>
+      <p>Topic updated successfully.</p>
       <Button asChild className="w-min">
         <Link href='/'>
           Okay

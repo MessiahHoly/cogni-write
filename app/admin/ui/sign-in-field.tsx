@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
+// import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldGroup,
@@ -8,9 +8,10 @@ import {
   FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { Spinner } from "@/components/ui/spinner"
+// import { Spinner } from "@/components/ui/spinner"
 import { authClient } from "@/lib/auth/auth-client"
 import { SubmitEvent, useState } from "react"
+import ButtonField from "./button-field"
 
 export function SignInField() {
   const [email, setEmail] = useState("")
@@ -63,7 +64,7 @@ export function SignInField() {
               </Field>
             </FieldGroup>
           </FieldSet>
-          <Field orientation="horizontal">
+          {/* <Field orientation="horizontal">
             {signingIn ? (
               <Button type="submit" disabled>
                 <Spinner data-icon="inline-start" />
@@ -75,7 +76,8 @@ export function SignInField() {
             <Button variant="outline" type="button">
               Cancel
             </Button>
-          </Field>
+          </Field> */}
+          <ButtonField children='Sign in' pending={signingIn} pendingText="Signing in..." />
         </FieldGroup>
       </form>
     </div>

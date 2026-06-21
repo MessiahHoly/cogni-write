@@ -2,12 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
-import { Spinner } from "@/components/ui/spinner";
+// import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { ContentEngine } from "@/generated/prisma/client";
 import { createOrUpdateContentEngine } from "@/lib/actions/content-engine";
 import Link from "next/link";
 import { useActionState } from "react";
+import ButtonField from "./button-field";
 
 export default function ContentEngineField({ contentEngine }: { contentEngine: ContentEngine | null }) {
   const [state, action, pending] = useActionState(createOrUpdateContentEngine, null)
@@ -44,7 +45,7 @@ export default function ContentEngineField({ contentEngine }: { contentEngine: C
               </Field>
             </FieldGroup>
           </FieldSet>
-          <Field orientation="horizontal">
+          {/* <Field orientation="horizontal">
             {pending ? (
               <Button type="submit" disabled>
                 <Spinner data-icon="inline-start" />
@@ -56,7 +57,8 @@ export default function ContentEngineField({ contentEngine }: { contentEngine: C
             <Button variant="outline" type="button">
               Cancel
             </Button>
-          </Field>
+          </Field> */}
+          <ButtonField children="Save" pending={pending} />
         </FieldGroup>
       </form>
     </div>

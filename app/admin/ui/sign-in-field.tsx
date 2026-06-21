@@ -17,6 +17,8 @@ export function SignInField() {
   const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [signingIn, setSigningIn] = useState(false)
 
+  //TODO: show error
+
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     setSigningIn(true)

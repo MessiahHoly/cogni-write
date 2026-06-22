@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
-// import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { ContentEngine } from "@/generated/prisma/client";
 import { createOrUpdateContentEngine } from "@/lib/actions/content-engine";
@@ -45,19 +44,6 @@ export default function ContentEngineField({ contentEngine }: { contentEngine: C
               </Field>
             </FieldGroup>
           </FieldSet>
-          {/* <Field orientation="horizontal">
-            {pending ? (
-              <Button type="submit" disabled>
-                <Spinner data-icon="inline-start" />
-                Saving...
-              </Button>
-            ) : (
-              <Button type="submit">Save</Button>
-            )}
-            <Button variant="outline" type="button">
-              Cancel
-            </Button>
-          </Field> */}
           <ButtonField children="Save" pending={pending} />
         </FieldGroup>
       </form>

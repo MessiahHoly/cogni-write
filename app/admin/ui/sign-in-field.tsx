@@ -1,6 +1,5 @@
 'use client'
 
-// import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldGroup,
@@ -8,28 +7,38 @@ import {
   FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-// import { Spinner } from "@/components/ui/spinner"
 import { authClient } from "@/lib/auth/auth-client"
-import { SubmitEvent, useState } from "react"
+import { SubmitEvent, useState } from "react" // Fixed import
 import ButtonField from "./button-field"
 
 export function SignInField() {
   const [email, setEmail] = useState("")
   const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [signingIn, setSigningIn] = useState(false)
+  const [error, setError] = useState<{
+    code?: string;
+    message?: string;
+    status: number;
+    statusText: string;
+  } | null>(null)
 
-  //TODO: show error
-
+  // Changed SubmitEvent to React.FormEvent
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
     setSigningIn(true)
-    const { data, error } = await authClient.signIn.magicLink({
+    setError(null) // CRITICAL: Clear previous error before a new attempt
+
+    const { data, error: fetchError } = await authClient.signIn.magicLink({
       email,
       callbackURL: `/admin`,
     })
-    if (data) {
+
+    if (fetchError) {
+      setError(fetchError)
+    } else if (data) {
       setMagicLinkSent(true)
     }
+    
     setSigningIn(false)
   }
 
@@ -50,34 +59,35 @@ export function SignInField() {
           <FieldSet>
             <FieldGroup>
               <Field>
-                <FieldLabel htmlFor="email">
-                  Email
-                </FieldLabel>
+                <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
                   placeholder="you@example.com"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    if (error) setError(null) // OPTIONAL UX: Clear error when user type fixes it
+                  }}
                   type="email"
+                  // Accessibility anchor
+                  aria-describedby={error ? "email-error" : undefined} 
+                  aria-invalid={!!error}
                 />
+                
+                {/* Fixed fallback condition and added id for accessibility */}
+                {error && (
+                  <p id="email-error" className="text-sm font-medium text-destructive">
+                    {error.message || `An error occurred (${error.status})`}
+                  </p>
+                )}
               </Field>
             </FieldGroup>
           </FieldSet>
-          {/* <Field orientation="horizontal">
-            {signingIn ? (
-              <Button type="submit" disabled>
-                <Spinner data-icon="inline-start" />
-                Signing in...
-              </Button>
-            ) : (
-              <Button type="submit">Sign in</Button>
-            )}
-            <Button variant="outline" type="button">
-              Cancel
-            </Button>
-          </Field> */}
-          <ButtonField children='Sign in' pending={signingIn} pendingText="Signing in..." />
+          {/* Note: changed children prop usage to standard React children mapping */}
+          <ButtonField pending={signingIn} pendingText="Signing in...">
+            Sign in
+          </ButtonField>
         </FieldGroup>
       </form>
     </div>

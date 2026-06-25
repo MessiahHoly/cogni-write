@@ -105,14 +105,14 @@ model ContentEngineArchive {
 }
 
 model Article {
-  id        String   @id @default(cuid())
-  topic     String   // The input topic passed to the API
-  content   String   @db.Text // The raw Markdown text returned by Gemma
-  
+  id      String @id @default(cuid())
+  topic   String // The input topic passed to the API
+  content String @db.Text // The raw Markdown text returned by Gemma
+
   // Highly recommended metadata for AI tracking
-  modelUsed String?  // e.g., "gemma-4-31b-it" or "gemma-2.5-flash"
-  status    String   @default("SUCCESS") // SUCCESS or FAILED
-  
+  modelUsed String // e.g., "gemma-4-31b-it" or "gemma-2.5-flash"
+  // status    String   @default("SUCCESS") // SUCCESS or FAILED
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

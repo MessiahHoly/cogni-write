@@ -86,6 +86,8 @@ model ContentEngine {
   createdBy             User                   @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdById           String
   contentEngineArchives ContentEngineArchive[]
+
+  @@map("content_engine")
 }
 
 model ContentEngineArchive {
@@ -98,4 +100,21 @@ model ContentEngineArchive {
   createdById     String
   contentEngine   ContentEngine @relation(fields: [contentEngineId], references: [id], onDelete: Cascade)
   contentEngineId String
+
+  @@map("content_engine_archive")
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  topic     String   // The input topic passed to the API
+  content   String   @db.Text // The raw Markdown text returned by Gemma
+  
+  // Highly recommended metadata for AI tracking
+  modelUsed String?  // e.g., "gemma-4-31b-it" or "gemma-2.5-flash"
+  status    String   @default("SUCCESS") // SUCCESS or FAILED
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("generated_articles") // Maps to a clean snake_case table in PostgreSQL
 }

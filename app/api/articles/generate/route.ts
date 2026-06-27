@@ -7,6 +7,11 @@ import { createArticle } from "@/lib/data/article"
 const ai = new GoogleGenAI({})
 
 export const POST = async (request: Request) => {
+  const apiKey = request.headers.get("x-api-key")
+  const expectedKey = process.env.ARTICLE_GENERATION_KEY
+
+  if (!expectedKey || apiKey !== expectedKey) return NextResponse.json({ error: "Unauthorised" }, { status: 401 })
+    
   const json = await request.json()
   const result = generateSchema.safeParse(json)
 
@@ -98,5 +103,4 @@ Follow these strict formatting and style guidelines:
   }
 }
 
-//TODO: add authentication to generate content
 //TODO: refactor generate content and save content

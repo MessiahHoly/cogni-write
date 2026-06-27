@@ -6,12 +6,22 @@ import { createArticle } from "@/lib/data/article"
 
 const ai = new GoogleGenAI({})
 
+const MODELS_FALLBACK_CHAIN = [
+  'gemma-4-31b-it',
+  'gemma-4-26b-a4b-it',
+  'gemma-2.5-flash'
+] as const
+
+type GemmaModel = typeof MODELS_FALLBACK_CHAIN[number]
+
 export const POST = async (request: Request) => {
   const apiKey = request.headers.get("x-api-key")
   const expectedKey = process.env.ARTICLE_GENERATION_KEY
 
-  if (!expectedKey || apiKey !== expectedKey) return NextResponse.json({ error: "Unauthorised" }, { status: 401 })
-    
+  if (!expectedKey || apiKey !== expectedKey) {
+    return NextResponse.json({ error: "Unauthorised" }, { status: 401 })
+  }
+
   const json = await request.json()
   const result = generateSchema.safeParse(json)
 
@@ -21,6 +31,7 @@ export const POST = async (request: Request) => {
   }
 
   const { topic } = result.data
+
   const contents = `
 Write a comprehensive blog article based on the following topic.
 
@@ -46,61 +57,59 @@ Follow these strict formatting and style guidelines:
 
   const createArticleWithTopic = createArticle(topic)
 
-  try {
-    console.log("Attempting analysis with gemma-4-31b-it...");
-    const model = 'gemma-4-31b-it'
-    const response = await ai.models.generateContent({
-      model,
-      // model: 'gemma-4-31b-it',
-      contents,
-      config: { systemInstruction }
-    })
-    const { text } = response
-    if (!text) throw { error: 'Text is empty.' }
-    const { data, error } = await createArticleWithTopic(model)(text)
-    if (error) throw { error }
-    if (!data) throw { error: 'Could not save in the database.' }
-    return NextResponse.json({ success: true, data })
-  } catch (gemma31Error) {
-    console.warn("gemma-4-31b-it threw an error. Trying stable Gemma MoE variant...", gemma31Error);
+  // 1. Isolated runner that explicitly handles errors as standard Go-style return data
+  const attemptGeneration = async (model: GemmaModel) => {
+    console.log(`Attempting generation with ${model}...`)
+
     try {
-      const model = 'gemma-4-26b-a4b-it'
-      const fallbackResponse = await ai.models.generateContent({
-        // model: 'gemma-4-26b-a4b-it',
+      const response = await ai.models.generateContent({
         model,
         contents,
         config: { systemInstruction }
       })
-      const { text } = fallbackResponse
-      if (!text) throw { error: 'Text is empty.' }
-      const { data, error } = await createArticleWithTopic(model)(text)
-      if (error) throw { error }
-      if (!data) throw { error: 'Could not save in the database.' }
-      return NextResponse.json({ success: true, data })
-      // return NextResponse.json({ success: true, text })
-    } catch (gemma26Error) {
-      console.error("gemma-4-26b-a4b-it also threw an error.", gemma26Error);
-      try {
-        const model = 'gemma-2.5-flash'
-        const fallbackResponse = await ai.models.generateContent({
-          model,
-          // model: 'gemma-2.5-flash',
-          contents,
-          config: { systemInstruction }
-        })
-        const { text } = fallbackResponse
-        if (!text) throw { error: 'Text is empty.' }
-        const { data, error } = await createArticleWithTopic(model)(text)
-        if (error) throw { error }
-        if (!data) throw { error: 'Could not save in the database.' }
-        return NextResponse.json({ success: true, data })
-        // return NextResponse.json({ success: true, text })
-      } catch (gemma25Error) {
-        console.warn("gemma-2.5-flash threw an error as well.", gemma25Error);
-        return NextResponse.json({ success: false, error: "Failed to fetch financial analysis from all models." })
+
+      const { text } = response
+      if (!text) return { error: 'Text is empty.', data: undefined }
+
+      return await createArticleWithTopic(model)(text)
+
+    } catch (networkError) {
+      return { 
+        error: networkError instanceof Error ? networkError.message : 'Network generation failed.',
+        data: undefined 
       }
     }
   }
-}
 
-//TODO: refactor generate content and save content
+  // 2. Exact return contract type inference
+  type PipelineResult = Awaited<ReturnType<typeof attemptGeneration>>
+
+  // Explicit type matching: initialized with data: undefined matching our pipeline returns
+  const initialAccumulator = Promise.resolve({ error: 'INITIAL_TRIGGER', data: undefined } as PipelineResult)
+
+  // 3. Pure Functional Pipeline
+  const finalResult = await MODELS_FALLBACK_CHAIN.reduce<Promise<PipelineResult>>(
+    async (previousPromise, currentModel) => {
+      const previousResult = await previousPromise
+
+      // Circuit Breaker: If data exists, bypass remaining steps and cascade down
+      if (previousResult.data) {
+        return previousResult
+      }
+
+      return attemptGeneration(currentModel)
+    },
+    initialAccumulator
+  )
+
+  // 4. Evaluation and Final Response Output
+  if (finalResult.error || !finalResult.data) {
+    console.error("All fallback layers exhausted without success.", finalResult.error)
+    return NextResponse.json(
+      { success: false, error: "Failed to generate article from all fallback models." },
+      { status: 500 }
+    )
+  }
+
+  return NextResponse.json({ success: true, data: finalResult.data })
+}

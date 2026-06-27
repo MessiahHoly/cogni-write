@@ -1,7 +1,8 @@
-import { generateSchema } from "@/lib/schemas/post"
+import { generateSchema } from "@/lib/schemas/article"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { GoogleGenAI } from "@google/genai"
+import { createArticle } from "@/lib/data/article"
 
 const ai = new GoogleGenAI({})
 
@@ -15,7 +16,6 @@ export const POST = async (request: Request) => {
   }
 
   const { topic } = result.data
-  // const contents = `Write an blog or news article upon the following topic: ${topic}`
   const contents = `
 Write a comprehensive blog article based on the following topic.
 
@@ -28,7 +28,6 @@ Requirements:
 4. Call to Action/Wrap-up: Conclude with a memorable final thought or a subtle prompt for reader reflection.
 `;
 
-  // const systemInstruction = 'You are a professional writer.'
   const systemInstruction = `
 You are an expert digital journalist and viral blog writer. 
 Your goal is to write highly engaging, informative, and scannable articles that capture and hold a reader's attention.
@@ -40,35 +39,57 @@ Follow these strict formatting and style guidelines:
 - Cleanliness: Do NOT include placeholders like "[Your Name]", "[Date]", or meta-commentary. Start directly with the article title.
 `;
 
+  const createArticleWithTopic = createArticle(topic)
+
   try {
     console.log("Attempting analysis with gemma-4-31b-it...");
+    const model = 'gemma-4-31b-it'
     const response = await ai.models.generateContent({
-      model: 'gemma-4-31b-it',
+      model,
+      // model: 'gemma-4-31b-it',
       contents,
       config: { systemInstruction }
     })
     const { text } = response
-    return NextResponse.json({ success: true, text })
+    if (!text) throw { error: 'Text is empty.' }
+    const { data, error } = await createArticleWithTopic(model)(text)
+    if (error) throw { error }
+    if (!data) throw { error: 'Could not save in the database.' }
+    return NextResponse.json({ success: true, data })
   } catch (gemma31Error) {
     console.warn("gemma-4-31b-it threw an error. Trying stable Gemma MoE variant...", gemma31Error);
     try {
+      const model = 'gemma-4-26b-a4b-it'
       const fallbackResponse = await ai.models.generateContent({
-        model: 'gemma-4-26b-a4b-it',
+        // model: 'gemma-4-26b-a4b-it',
+        model,
         contents,
         config: { systemInstruction }
       })
       const { text } = fallbackResponse
-      return NextResponse.json({ success: true, text })
+      if (!text) throw { error: 'Text is empty.' }
+      const { data, error } = await createArticleWithTopic(model)(text)
+      if (error) throw { error }
+      if (!data) throw { error: 'Could not save in the database.' }
+      return NextResponse.json({ success: true, data })
+      // return NextResponse.json({ success: true, text })
     } catch (gemma26Error) {
       console.error("gemma-4-26b-a4b-it also threw an error.", gemma26Error);
       try {
+        const model = 'gemma-2.5-flash'
         const fallbackResponse = await ai.models.generateContent({
-          model: 'gemma-2.5-flash',
+          model,
+          // model: 'gemma-2.5-flash',
           contents,
           config: { systemInstruction }
         })
         const { text } = fallbackResponse
-        return NextResponse.json({ success: true, text })
+        if (!text) throw { error: 'Text is empty.' }
+        const { data, error } = await createArticleWithTopic(model)(text)
+        if (error) throw { error }
+        if (!data) throw { error: 'Could not save in the database.' }
+        return NextResponse.json({ success: true, data })
+        // return NextResponse.json({ success: true, text })
       } catch (gemma25Error) {
         console.warn("gemma-2.5-flash threw an error as well.", gemma25Error);
         return NextResponse.json({ success: false, error: "Failed to fetch financial analysis from all models." })
@@ -76,3 +97,6 @@ Follow these strict formatting and style guidelines:
     }
   }
 }
+
+//TODO: add authentication to generate content
+//TODO: refactor generate content and save content

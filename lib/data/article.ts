@@ -2,7 +2,7 @@ import { z } from "zod"
 import { CreateArticleSchema } from "../schemas/article"
 import { prisma } from "./prisma"
 
-export const createArticle = (topic: string) => (content: string) => async (modelUsed: string) => {
+export const createArticle = (topic: string) => (modelUsed: string) => async (content: string) => {
   // Validate the combined inputs at runtime
   const result = CreateArticleSchema.safeParse({
     topic,

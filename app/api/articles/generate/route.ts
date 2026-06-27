@@ -2,7 +2,7 @@ import { generateSchema } from "@/lib/schemas/article"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { GoogleGenAI } from "@google/genai"
-import { createArticle } from "@/lib/data/article"
+import { attemptGeneration, createArticle } from "@/lib/data/article"
 
 const ai = new GoogleGenAI({})
 
@@ -55,34 +55,36 @@ Follow these strict formatting and style guidelines:
 - Cleanliness: Do NOT include placeholders like "[Your Name]", "[Date]", or meta-commentary. Start directly with the article title.
 `;
 
-  const createArticleWithTopic = createArticle(topic)
+  // const createArticleWithTopic = createArticle(topic)
 
   // 1. Isolated runner that explicitly handles errors as standard Go-style return data
-  const attemptGeneration = async (model: GemmaModel) => {
-    console.log(`Attempting generation with ${model}...`)
+  // const attemptGeneration = async (model: GemmaModel) => {
+  //   console.log(`Attempting generation with ${model}...`)
 
-    try {
-      const response = await ai.models.generateContent({
-        model,
-        contents,
-        config: { systemInstruction }
-      })
+  //   try {
+  //     const response = await ai.models.generateContent({
+  //       model,
+  //       contents,
+  //       config: { systemInstruction }
+  //     })
 
-      const { text } = response
-      if (!text) return { error: 'Text is empty.', data: undefined }
+  //     const { text } = response
+  //     if (!text) return { error: 'Text is empty.', data: undefined }
 
-      return await createArticleWithTopic(model)(text)
+  //     return await createArticleWithTopic(model)(text)
+  //   } catch (networkError) {
+  //     return { 
+  //       error: networkError instanceof Error ? networkError.message : 'Network generation failed.',
+  //       data: undefined 
+  //     }
+  //   }
+  // }
 
-    } catch (networkError) {
-      return { 
-        error: networkError instanceof Error ? networkError.message : 'Network generation failed.',
-        data: undefined 
-      }
-    }
-  }
+  const attemptGenerationWithTopicContentsAndSystemInstruction = attemptGeneration(topic)(contents)(systemInstruction)
 
   // 2. Exact return contract type inference
-  type PipelineResult = Awaited<ReturnType<typeof attemptGeneration>>
+  type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithTopicContentsAndSystemInstruction>>
+  // type PipelineResult = Awaited<ReturnType<typeof attemptGeneration>>
 
   // Explicit type matching: initialized with data: undefined matching our pipeline returns
   const initialAccumulator = Promise.resolve({ error: 'INITIAL_TRIGGER', data: undefined } as PipelineResult)
@@ -97,7 +99,8 @@ Follow these strict formatting and style guidelines:
         return previousResult
       }
 
-      return attemptGeneration(currentModel)
+      return attemptGenerationWithTopicContentsAndSystemInstruction(currentModel)
+      // return attemptGeneration(currentModel)
     },
     initialAccumulator
   )

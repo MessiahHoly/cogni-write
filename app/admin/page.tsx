@@ -5,7 +5,6 @@ import { fetchContentEngine } from "@/lib/data/content-engine";
 
 export default async function Page() {
   const [session, contentEngine] = await Promise.all([getSession(), fetchContentEngine()])
-  // const session = await getSession()
 
   if (!session) {
     return (

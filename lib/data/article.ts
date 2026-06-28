@@ -25,7 +25,7 @@ export const createArticle = (topic: string) => (modelUsed: string) => async (co
   return { data: article }
 }
 
-const MODELS_FALLBACK_CHAIN = [
+export const MODELS_FALLBACK_CHAIN = [
   'gemma-4-31b-it',
   'gemma-4-26b-a4b-it',
   'gemma-2.5-flash'
@@ -46,8 +46,10 @@ export const attemptGeneration = (topic: string) => (contents: string) => (syste
     })
 
     const { text } = response
-
-    if (!text) return { error: 'Text is empty.', data: undefined }
+    if (!text) return {
+      error: 'Text is empty.',
+      // data: undefined
+    }
 
     return await createArticle(topic)(model)(text)
   } catch (error) {

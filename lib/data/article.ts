@@ -15,7 +15,6 @@ export const createArticle = (topic: string) => (modelUsed: string) => async (co
     return { error }
   }
 
-  // Destructure the securely validated data
   const { data } = result
 
   const article = await prisma.article.create({
@@ -36,7 +35,6 @@ type GemmaModel = typeof MODELS_FALLBACK_CHAIN[number]
 const ai = new GoogleGenAI({})
 
 const attemptGeneration = (topic: string) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
-// export const attemptGeneration = (topic: string) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
   console.log(`Attempting generation with ${model}...`)
 
   try {

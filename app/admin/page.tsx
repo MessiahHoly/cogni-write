@@ -1,12 +1,12 @@
 import { getSession } from "@/lib/auth/server";
 import { SignInField } from "./ui/sign-in-field";
-import ContentEngineField from "./ui/content-engine-field";
+// import ContentEngineField from "./ui/content-engine-field";
 import { fetchContentEngine, fetchContentEngines } from "@/lib/data/content-engine";
-// import { Button } from "@/components/ui/button";
 import { ArrowRight, FileText, PlusCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import CreateEngineDialog from "./ui/create-engine-dialog";
 
 export default async function Page() {
   const [session, contentEngine, contentEngines] = await Promise.all([getSession(), fetchContentEngine(), fetchContentEngines()])
@@ -39,10 +39,11 @@ export default async function Page() {
           <h1 className="text-3xl font-extrabold tracking-tight">Content Engines</h1>
           <p className="text-muted-foreground mt-1">Manage automated article generation workspaces by topic.</p>
         </div>
-        <Button className="sm:w-auto w-full flex items-center gap-2">
+        {/* <Button className="sm:w-auto w-full flex items-center gap-2">
           <PlusCircle className="h-4 w-4" />
           Create New Engine
-        </Button>
+        </Button> */}{/* Render the unified Dialog + Button wrapper component */}
+        <CreateEngineDialog />
       </div>
 
       {/* Grid Display of Content Engines */}

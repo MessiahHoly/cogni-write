@@ -21,7 +21,11 @@ const resolveUniqueSlug = (baseSlug: string) => async (counter = 0): Promise<str
 }
 
 export const validateAndResolveContentEngine = async (rawData: unknown) => {
+  console.log("validateAndResolveContentEngine rawData:", rawData)
+  
   const shapeResult = CreateContentEngineSchema.safeParse(rawData)
+
+  // console.log("validateAndResolveContentEngine shapeResult:", shapeResult)
 
   if (!shapeResult.success) {
     return { error: z.prettifyError(shapeResult.error), data: undefined }

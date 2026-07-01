@@ -4,13 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { ContentEngine } from "@/generated/prisma/client";
-import { createOrUpdateContentEngine } from "@/lib/actions/content-engine";
+// import { createOrUpdateContentEngine } from "@/lib/actions/content-engine";
 import Link from "next/link";
 import { useActionState } from "react";
 import ButtonField from "./button-field";
+import { createContentEngine } from "@/lib/actions/content-engine";
 
 export default function ContentEngineField({ contentEngine }: { contentEngine: ContentEngine | null }) {
-  const [state, action, pending] = useActionState(createOrUpdateContentEngine, null)
+  const [state, action, pending] = useActionState(createContentEngine, null)
+  // const [state, action, pending] = useActionState(createOrUpdateContentEngine, null)
 
   if (state?.success) return (
     <div className="flex flex-col gap-10">

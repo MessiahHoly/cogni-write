@@ -52,7 +52,8 @@ export const createContentEngine = async (initialState: unknown, formData: FormD
     return { success: false, error: "Unauthorized" }
   }
 
-  const { data, error } = await validateAndResolveContentEngine(formData)
+  const { data, error } = await validateAndResolveContentEngine({ topic: formData.get("topic") })
+  // const { data, error } = await validateAndResolveContentEngine(formData)
   // const result = await validateAndResolveContentEngine(formData)
 
   if (error || !data) {

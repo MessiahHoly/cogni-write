@@ -25,7 +25,8 @@ export default function CreateEngineDialog() {
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-106.25">
+      {/* <DialogContent className="sm:max-w-[425px]"> */}
         <DialogHeader>
           <DialogTitle>Create Content Engine</DialogTitle>
           <DialogDescription>

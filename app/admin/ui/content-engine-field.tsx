@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { ContentEngine } from "@/generated/prisma/client";
-import Link from "next/link";
+// import Link from "next/link";
 import { useActionState } from "react";
 import ButtonField from "./button-field";
 import { createContentEngine } from "@/lib/actions/content-engine";
@@ -16,11 +16,9 @@ export default function ContentEngineField({ contentEngine, onSuccess }: { conte
 
   if (state?.success) return (
     <div className="flex flex-col gap-10">
-      <p>Topic updated successfully.</p>
+      <p>Topic created successfully.</p>
       <Button className="w-min" onClick={onSuccess}>
-        {/* <Link href='/'> */}
         Okay
-        {/* </Link> */}
       </Button>
     </div>
   )

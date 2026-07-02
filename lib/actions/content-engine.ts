@@ -53,14 +53,10 @@ export const createContentEngine = async (initialState: unknown, formData: FormD
   }
 
   const { data, error } = await validateAndResolveContentEngine({ topic: formData.get("topic") })
-  // const { data, error } = await validateAndResolveContentEngine(formData)
-  // const result = await validateAndResolveContentEngine(formData)
 
   if (error || !data) {
     return { success: false, error }
   }
-
-  // const { data } = result
 
   try {
     await prisma.contentEngine.create({ data: { ...data, createdById: session.user.id } })

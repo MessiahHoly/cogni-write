@@ -8,8 +8,6 @@ import { useActionState } from "react";
 import ButtonField from "./button-field";
 import { createContentEngine } from "@/lib/actions/content-engine";
 
-//TODO: update nextjs
-
 export default function ContentEngineField({ contentEngine, onSuccess }: { contentEngine: ContentEngine | null; onSuccess: () => void }) {
   const [state, action, pending] = useActionState(createContentEngine, null)
 

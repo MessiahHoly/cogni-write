@@ -8,14 +8,24 @@ interface ButtonFieldProps {
   pending: boolean;
   children: ReactNode;
   pendingText?: string;
+  onCancel?: () => void;
 }
 
 export default function ButtonField({
   pending,
   children,
-  pendingText = "Saving..."
+  pendingText = "Saving...",
+  onCancel
 }: ButtonFieldProps) {
   const router = useRouter();
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel();
+    } else {
+      router.back();
+    }
+  };
 
   return (
     <Field orientation="horizontal">
@@ -24,11 +34,12 @@ export default function ButtonField({
         {pending ? pendingText : children}
       </Button>
 
-      <Button 
-        variant="outline" 
-        type="button" 
-        disabled={pending} 
-        onClick={() => router.back()}
+      <Button
+        variant="outline"
+        type="button"
+        disabled={pending}
+        onClick={handleCancel}
+      // onClick={() => router.back()}
       >
         Cancel
       </Button>

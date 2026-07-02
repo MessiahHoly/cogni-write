@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { ContentEngine } from "@/generated/prisma/client";
-// import Link from "next/link";
 import { useActionState } from "react";
 import ButtonField from "./button-field";
 import { createContentEngine } from "@/lib/actions/content-engine";
@@ -44,7 +43,7 @@ export default function ContentEngineField({ contentEngine, onSuccess }: { conte
               </Field>
             </FieldGroup>
           </FieldSet>
-          <ButtonField children="Save" pending={pending} />
+          <ButtonField children="Save" pending={pending} onCancel={onSuccess} />
         </FieldGroup>
       </form>
     </div>

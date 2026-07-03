@@ -1,15 +1,25 @@
 import { getSession } from "@/lib/auth/server";
 import { SignInField } from "./ui/sign-in-field";
-// import ContentEngineField from "./ui/content-engine-field";
-import { fetchContentEngine, fetchContentEngines } from "@/lib/data/content-engine";
-import { ArrowRight, FileText, PlusCircle } from "lucide-react";
+import {
+  // fetchContentEngine,
+  fetchContentEngines
+} from "@/lib/data/content-engine";
+import {
+  ArrowRight, FileText,
+  // PlusCircle
+} from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import CreateEngineDialog from "./ui/create-engine-dialog";
+import CreateEngineDialog from "./ui/content-engine-dialog";
+import ContentEngineDialog from "./ui/content-engine-dialog";
 
 export default async function Page() {
-  const [session, contentEngine, contentEngines] = await Promise.all([getSession(), fetchContentEngine(), fetchContentEngines()])
+  const [session,
+    // contentEngine,
+    contentEngines] = await Promise.all([getSession(),
+    // fetchContentEngine(),
+    fetchContentEngines()])
 
   if (!session) {
     return (
@@ -29,9 +39,6 @@ export default async function Page() {
   }
 
   return (
-    // <main className="p-4 flex flex-col items-center justify-center min-h-screen">
-    //   <ContentEngineField contentEngine={contentEngine} />
-    // </main>
     <main className="max-w-7xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
       {/* Dashboard Top Header Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-5">
@@ -51,6 +58,7 @@ export default async function Page() {
                 <span className="text-xs font-mono bg-muted px-2 py-1 rounded text-muted-foreground">
                   /{engine.slug}
                 </span>
+                <ContentEngineDialog contentEngine={engine} />
               </div>
               <CardTitle className="text-xl capitalize pt-2">{engine.topic}</CardTitle>
               <CardDescription>

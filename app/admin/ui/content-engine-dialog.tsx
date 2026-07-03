@@ -28,7 +28,7 @@ export default function ContentEngineDialog({ contentEngine }: ContentEngineDial
         {isUpdateMode ? (
           <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
             <Settings2 className="h-4 w-4" />
-            <span className="sr-only">Edit Content Engine</span>            
+            <span className="sr-only">Edit Content Engine</span>
           </Button>
         ) : (
           <Button className="sm:w-auto w-full flex items-center gap-2">
@@ -36,40 +36,19 @@ export default function ContentEngineDialog({ contentEngine }: ContentEngineDial
             Create New Engine
           </Button>
         )}
-        {/* {isUpdateMode ? (
-          <Button variant="outline" className="sm:w-auto w-full flex items-center gap-2">
-            <PlusCircle className="h-4 w-4" />
-            Update
-          </Button>
-        ) : (
-          <Button className="sm:w-auto w-full flex items-center gap-2">
-            <PlusCircle className="h-4 w-4" />
-            Create New Engine
-          </Button>
-        )} */}
-      {/* </DialogTrigger>
-        <Button className="sm:w-auto w-full flex items-center gap-2">
-          <PlusCircle className="h-4 w-4" />
-          Create New Engine
-        </Button> */}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>{isUpdateMode ? "Update Content Engine" : "Create Content Engine"}</DialogTitle>
-          {/* <DialogTitle>Create Content Engine</DialogTitle> */}
           <DialogDescription>
             {isUpdateMode
               ? "Update the settings of your content engine. Changes will affect future article generation."
               : "Add a main topic workspace. The engine will run fallback logic to generate relevant articles."}
-            {/* Add a main topic workspace. The engine will run fallback logic to generate relevant articles. */}
           </DialogDescription>
         </DialogHeader>
 
-{/* TODO: check if ContentEngine should be both undefined and null, or just one of them. If it's just one, we can simplify the type to just ContentEngine | undefined. */}
-
         <div className="pt-4">
-          {/* Reusing your component, passing null for clean creation */}
           <ContentEngineField contentEngine={contentEngine} onSuccess={() => setOpen(false)} />
         </div>
       </DialogContent>

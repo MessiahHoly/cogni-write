@@ -110,7 +110,7 @@ model ContentEngineArchive {
 model Article {
   id        String @id @default(cuid())
   topic     String // The input topic passed to the API
-  slug      String
+  // slug      String
   content   String @db.Text // The raw Markdown text returned by Gemma
   modelUsed String // e.g., "gemma-4-31b-it" or "gemma-2.5-flash"
 
@@ -120,6 +120,6 @@ model Article {
   contentEngine   ContentEngine @relation(fields: [contentEngineId], references: [id], onDelete: Cascade)
   contentEngineId String
 
-  @@unique([contentEngineId, slug])
+  // @@unique([contentEngineId, slug])
   @@map("article") // Maps to a clean snake_case table in PostgreSQL
 }

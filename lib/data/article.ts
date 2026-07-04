@@ -2,12 +2,15 @@ import { z } from "zod"
 import { CreateArticleSchema } from "../schemas/article"
 import { prisma } from "./prisma"
 import { GoogleGenAI } from "@google/genai"
+import { ContentEngine } from "@/generated/prisma/browser"
 
-export const createArticle = (topic: string) => (modelUsed: string) => async (content: string) => {
+export const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => async (content: string) => {
+  // export const createArticle = (topic: string) => (modelUsed: string) => async (content: string) => {
   const result = CreateArticleSchema.safeParse({
-    topic,
+    topic: contentEngine.topic,
     content,
     modelUsed,
+    contentEngineId: contentEngine.id
   })
 
   if (!result.success) {
@@ -16,10 +19,7 @@ export const createArticle = (topic: string) => (modelUsed: string) => async (co
   }
 
   const { data } = result
-
-  const article = await prisma.article.create({
-    data
-  })
+  const article = await prisma.article.create({ data })
 
   return { data: article }
 }
@@ -34,32 +34,36 @@ type GemmaModel = typeof MODELS_FALLBACK_CHAIN[number]
 
 const ai = new GoogleGenAI({})
 
-const attemptGeneration = (topic: string) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
-  console.log(`Attempting generation with ${model}...`)
+const attemptGeneration =
+  (contentEngine: ContentEngine) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
+    // const attemptGeneration = (topic: string) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
+    console.log(`Attempting generation with ${model}...`)
+    const topic = contentEngine.topic
 
-  try {
-    const response = await ai.models.generateContent({
-      model,
-      contents,
-      config: { systemInstruction }
-    })
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents,
+        config: { systemInstruction }
+      })
 
-    const { text } = response
-    if (!text) return {
-      error: 'Text is empty.',
+      const { text } = response
+      if (!text) return {
+        error: 'Text is empty.',
+      }
+
+      return await createArticle(contentEngine)(model)(text)
+    } catch (error) {
+      return { error: error instanceof Error ? error.message : 'Article generation by AI failed.' }
     }
-
-    return await createArticle(topic)(model)(text)
-  } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Article generation by AI failed.' }
   }
-}
 
-export const generateAndSaveArticle = async (topic: string) => {
+export const generateAndSaveArticle = async (contentEngine: ContentEngine) => {
+  // export const generateAndSaveArticle = async (topic: string) => {
   const contents = `
 Write a comprehensive blog article based on the following topic.
 
-Topic: ${topic}
+Topic: ${contentEngine.topic}
 
 Requirements:
 1. Target Length: Approximately 800–1200 words.
@@ -79,7 +83,7 @@ Follow these strict formatting and style guidelines:
 - Cleanliness: Do NOT include placeholders like "[Your Name]", "[Date]", or meta-commentary. Start directly with the article title.
 `;
 
-  const attemptGenerationWithTopicContentsAndSystemInstruction = attemptGeneration(topic)(contents)(systemInstruction)
+  const attemptGenerationWithTopicContentsAndSystemInstruction = attemptGeneration(contentEngine)(contents)(systemInstruction)
 
   // 2. Exact return contract type inference
   type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithTopicContentsAndSystemInstruction>>

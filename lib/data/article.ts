@@ -5,7 +5,6 @@ import { GoogleGenAI } from "@google/genai"
 import { ContentEngine } from "@/generated/prisma/browser"
 
 export const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => async (content: string) => {
-  // export const createArticle = (topic: string) => (modelUsed: string) => async (content: string) => {
   const result = CreateArticleSchema.safeParse({
     topic: contentEngine.topic,
     content,
@@ -36,7 +35,6 @@ const ai = new GoogleGenAI({})
 
 const attemptGeneration =
   (contentEngine: ContentEngine) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
-    // const attemptGeneration = (topic: string) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
     console.log(`Attempting generation with ${model}...`)
     const topic = contentEngine.topic
 
@@ -59,7 +57,6 @@ const attemptGeneration =
   }
 
 export const generateAndSaveArticle = async (contentEngine: ContentEngine) => {
-  // export const generateAndSaveArticle = async (topic: string) => {
   const contents = `
 Write a comprehensive blog article based on the following topic.
 
@@ -105,3 +102,9 @@ Follow these strict formatting and style guidelines:
     initialAccumulator
   )
 }
+
+export const fetchArticleBySlugAndId = (slug: string) => (id: string) =>
+  prisma.article.findUnique({
+    where: { id, contentEngine: { slug } },
+    include: { contentEngine: true }
+  })

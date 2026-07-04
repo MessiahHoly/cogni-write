@@ -6,10 +6,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { ContentEngine } from "@/generated/prisma/client";
 import { useActionState } from "react";
 import ButtonField from "./button-field";
-import { createContentEngine } from "@/lib/actions/content-engine";
+import { createContentEngine, updateContentEngine } from "@/lib/actions/content-engine";
 
 export default function ContentEngineField({ contentEngine, onSuccess }: { contentEngine?: ContentEngine | null; onSuccess: () => void }) {
-  const [state, action, pending] = useActionState(createContentEngine, null)
+  const targetAction = contentEngine ? updateContentEngine.bind(null, contentEngine.id) : createContentEngine
+  const [state, action, pending] = useActionState(targetAction, null)
+
 
   if (state?.success) return (
     <div className="flex flex-col gap-10">

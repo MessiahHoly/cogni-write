@@ -17,29 +17,29 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     <main className="max-w-5xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
       <div className="space-y-4">
         <Button asChild variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground">
-          <Link href="/admin">
+          <Link href="/">
             <ArrowLeft className="w-4 h-4" />
-            Back to Dashboard
+            Back to Home
           </Link>
         </Button>
 
         <div className="border-b pb-5">
-          <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-1 rounded">
+          {/* <span className="text-xs font-mono bg-primary/10 text-primary px-2 py-1 rounded">
             /{contentEngine.slug}
-          </span>
+          </span> */}
           <h1 className="text-3xl font-extrabold tracking-tight capitalize mt-2">
             {contentEngine.topic}
           </h1>
-          <p className="text-muted-foreground mt-1">
+          {/* <p className="text-muted-foreground mt-1">
             Review and track all automated articles generated for this core topic channel.
-          </p>
+          </p> */}
         </div>
 
         <div className="space-y-6">
-          <h2 className="text-xl font-bold flex items-center gap-2">
+          {/* <h2 className="text-xl font-bold flex items-center gap-2">
             <FileText className="w-5 h-5 text-muted-foreground" />
             Generated Articles {contentEngine.articles.length || 0}
-          </h2>
+          </h2> */}
 
           {contentEngine.articles.length === 0 ? (
             <div className="border border-dashed rounded-xl p-12 text-center space-y-3 bg-muted/10">
@@ -62,10 +62,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
                           day: "numeric",
                         })}
                       </span>
-                      <span className="flex items-center gap-1 font-mono bg-muted px-2 py-0.5 rounded w-max">
+                      {/* <span className="flex items-center gap-1 font-mono bg-muted px-2 py-0.5 rounded w-max">
                         <Cpu className="w-3 h-3" />
                         Model used supposed to be here.
-                      </span>
+                      </span> */}
                     </div>
                     <CardTitle className="text-xl pt-2 hover:text-primary transition-colors">
                       <Link href={`/${slug}/${article.id}`} className="block">

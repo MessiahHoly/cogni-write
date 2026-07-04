@@ -96,7 +96,6 @@ model ContentEngineArchive {
   id        String   @id @default(cuid())
   topic     String
   slug      String
-  //TODO: save slug when creating content engine archive
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -113,9 +112,7 @@ model Article {
   topic     String // The input topic passed to the API
   slug      String
   content   String @db.Text // The raw Markdown text returned by Gemma
-  // Highly recommended metadata for AI tracking
   modelUsed String // e.g., "gemma-4-31b-it" or "gemma-2.5-flash"
-  // status    String   @default("SUCCESS") // SUCCESS or FAILED
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

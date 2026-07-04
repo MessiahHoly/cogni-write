@@ -25,11 +25,8 @@ export const validateAndResolveContentEngine = async (rawData: unknown) => {
   
   const shapeResult = CreateContentEngineSchema.safeParse(rawData)
 
-  // console.log("validateAndResolveContentEngine shapeResult:", shapeResult)
-
   if (!shapeResult.success) {
     return { error: z.prettifyError(shapeResult.error), data: undefined }
-    // return { success: false, error: z.prettifyError(shapeResult.error) }
   }
 
   const { topic } = shapeResult.data
@@ -38,5 +35,4 @@ export const validateAndResolveContentEngine = async (rawData: unknown) => {
   const slug = await resolveUniqueSlug(baseSlug)()
 
   return { data: { topic, slug }, error: undefined }
-  // return { success: true, slug }
 }

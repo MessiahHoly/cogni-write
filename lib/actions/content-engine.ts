@@ -6,7 +6,6 @@ import {
   validateAndResolveContentEngine
 } from "../data/content-engine";
 import { prisma } from "../data/prisma";
-// import { CreateContentEngineSchema } from "../schemas/content-engine";
 
 export const createContentEngine = async (initialState: unknown, formData: FormData) => {
   const [session] = await Promise.all([getSession()])
@@ -15,7 +14,6 @@ export const createContentEngine = async (initialState: unknown, formData: FormD
     return { success: false, error: "Unauthorized" }
   }
 
-  //TODO: check if I should separate validateAndResolveContentEngine
   const { data, error } = await validateAndResolveContentEngine({ topic: formData.get("topic") })
 
   if (error || !data) {
@@ -38,10 +36,6 @@ export const updateContentEngine = async (id: string, initialState: unknown, for
   if (!session?.user.id || !isAdmin(session?.user.email || "")) {
     return { success: false, error: "Unauthorized" }
   }
-
-  // if (!id) {
-  //   return { success: false, error: "Missing content engine ID" }
-  // }
 
   const { data, error } = await validateAndResolveContentEngine({ topic: formData.get("topic") })
 

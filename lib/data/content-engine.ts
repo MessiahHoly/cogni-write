@@ -10,6 +10,10 @@ export const fetchContentEngines = () => prisma.contentEngine.findMany({ include
 
 const fetchContentEngineBySlug = (slug: string) => prisma.contentEngine.findUnique({ where: { slug } })
 
+export const fetchContentEngineAndArticlesBySlug = (slug: string) => prisma.contentEngine.findUnique({
+  where: { slug }, include: { articles: { orderBy: { updatedAt: 'desc' } } }
+})
+
 const resolveUniqueSlug = (baseSlug: string) => async (counter = 0): Promise<string> => {
   const currentSlug = counter === 0 ? baseSlug : `${baseSlug}-${counter}`
 
@@ -22,7 +26,7 @@ const resolveUniqueSlug = (baseSlug: string) => async (counter = 0): Promise<str
 
 export const validateAndResolveContentEngine = async (rawData: unknown) => {
   console.log("validateAndResolveContentEngine rawData:", rawData)
-  
+
   const shapeResult = CreateContentEngineSchema.safeParse(rawData)
 
   if (!shapeResult.success) {

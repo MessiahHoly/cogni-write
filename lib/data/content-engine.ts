@@ -8,6 +8,19 @@ export const fetchContentEngine = () => prisma.contentEngine.findFirst()
 
 export const fetchContentEngines = () => prisma.contentEngine.findMany({ include: { articles: { orderBy: { updatedAt: 'desc' } } } })
 
+export const fetchContentEnginesWithLatestArticleAndCount = () => prisma.contentEngine.findMany({
+  include: {
+    articles: {
+      orderBy: { updatedAt: 'desc' },
+      take: 1,
+    },
+    _count: {
+      select: { articles: true }
+    }
+  },
+  orderBy: { topic: 'asc' }
+})
+
 const fetchContentEngineBySlug = (slug: string) => prisma.contentEngine.findUnique({ where: { slug } })
 
 export const fetchContentEngineAndArticlesBySlug = (slug: string) => prisma.contentEngine.findUnique({

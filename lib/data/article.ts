@@ -4,7 +4,16 @@ import { prisma } from "./prisma"
 import { GoogleGenAI } from "@google/genai"
 import { ContentEngine } from "@/generated/prisma/browser"
 
-export const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => async (content: string) => {
+const fetchArticleByContentEngineId = (contentEngineId: string) => {
+  return prisma.article.findMany({
+    where: { contentEngineId },
+    select: { content: true },
+    orderBy: { createdAt: 'desc' }
+  })
+}
+
+const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => async (content: string) => {
+  // export const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => async (content: string) => {
   const result = CreateArticleSchema.safeParse({
     topic: contentEngine.topic,
     content,
@@ -36,7 +45,7 @@ const ai = new GoogleGenAI({})
 const attemptGeneration =
   (contentEngine: ContentEngine) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
     console.log(`Attempting generation with ${model}...`)
-    const topic = contentEngine.topic
+    // const topic = contentEngine.topic
 
     try {
       const response = await ai.models.generateContent({
@@ -57,10 +66,18 @@ const attemptGeneration =
   }
 
 export const generateAndSaveArticle = async (contentEngine: ContentEngine) => {
+  const articles = await fetchArticleByContentEngineId(contentEngine.id)
+  const titles = articles.map(({ content }) => content.split('\n')[0].replace(/^#\s*/, '').trim())
+  // console.log(`Existing titles for content engine "${contentEngine.topic}":`, titles)
+  const historyContext = titles.length > 0
+    ? `\nHere are the titles of articles you have already written on this topic:\n${titles.map((title, i) => `${i + 1}. "${title}"`).join('\n')}\n\nCRITICAL MANDATE: Do not duplicate the angles, hooks, or core structures used in these past titles. You must provide a fresh perspective, evolve the narrative, or focus on a different sub-angle of the topic.`
+    : '\nThis is the first article for this topic. Establish a foundational overview.';
+
   const contents = `
 Write a comprehensive blog article based on the following topic.
 
 Topic: ${contentEngine.topic}
+${historyContext}
 
 Requirements:
 1. Target Length: Approximately 800–1200 words.

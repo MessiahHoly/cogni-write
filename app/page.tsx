@@ -1,65 +1,87 @@
-import Image from "next/image";
+// 
 
-export default function Home() {
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { fetchContentEnginesWithLatestArticleAndCount } from "@/lib/data/content-engine";
+import { BookOpen, Calendar, ChevronRight } from "lucide-react";
+import Link from "next/link";
+
+export default async function Home() {
+  const contentEngines = await fetchContentEnginesWithLatestArticleAndCount();
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="max-w-5xl mx-auto p-6 md:p-10 space-y-12 min-h-screen">
+      {/* Hero Banner Area */}
+      <div className="text-center py-12 space-y-4 border-b">
+        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+          Knowledge Channels
+        </h1>
+        <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-left">
+          Explore automated, deep-dive articles curated across specialized niche topics.
+        </p>
+      </div>
+
+      {/* Grid Directory of Channels */}
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <BookOpen className="h-5 w-5 text-primary" />
+          Topics
+        </h2>
+
+        {contentEngines.length === 0 ? (
+          <div className="border border-dashed rounded-xl p-12 text-center bg-muted/10">
+            <p className="text-muted-foreground font-medium">
+              No publication channels available right now.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2">
+            {/* Fixed Destructuring Arguments here */}
+            {contentEngines.map(({ _count, articles, id, topic, slug }) => {
+              const count = _count.articles;
+              const latestArticle = articles[0];
+
+              return (
+                <Link key={id} href={`/${slug}`} className="group block">
+                  {/* Reverted w-full back to h-full for perfectly uniform card heights */}
+                  <Card className="h-full hover:border-primary/40 transition-all group-hover:shadow-sm flex flex-col justify-between">
+                    <CardHeader className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold tracking-wider uppercase text-primary bg-primary/5 px-2.5 py-1 rounded-full">
+                          {count} {count === 1 ? "article" : "articles"}
+                        </span>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-0.5" />
+                      </div>
+
+                      <CardTitle className="text-2xl capitalize pt-1 group-hover:text-primary transition-colors">
+                        {topic}
+                      </CardTitle>
+                    </CardHeader>
+
+                    <CardContent className="pt-0">
+                      {latestArticle ? (
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground border-t pt-4 mt-2">
+                          <Calendar className="h-3.5 w-3.5" />
+                          <span>
+                            Updated {new Date(latestArticle.createdAt).toLocaleDateString(undefined, {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                          </span>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground border-t pt-4 mt-2 italic">
+                          No articles available.
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </main>
   );
 }

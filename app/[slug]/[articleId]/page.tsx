@@ -6,6 +6,23 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+export const generateMetadata = async ({ params }: { params: Promise<{ slug: string, articleId: string }> }) => {
+  const { slug, articleId } = await params
+  const article = await fetchArticleBySlugAndId(slug)(articleId)
+
+  if (!article) {
+    return {}
+  }
+
+  const textLines = article.content.split("\n")
+  const parsedTitle = textLines[0].replace(/^#\s*/, "") || "Untitled Article"
+
+  return {
+    title: article.topic,
+    description: parsedTitle,
+  }
+}
+
 export default async function Page({ params }: { params: Promise<{ slug: string, articleId: string }> }) {
   const { slug, articleId } = await params
   const article = await fetchArticleBySlugAndId(slug)(articleId)

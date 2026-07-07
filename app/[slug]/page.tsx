@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchContentEngineAndArticlesBySlug } from "@/lib/data/content-engine";
 import {
   ArrowLeft, Calendar,
-  // Cpu, FileText
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";

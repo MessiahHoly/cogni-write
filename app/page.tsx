@@ -1,5 +1,3 @@
-// 
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchContentEnginesWithLatestArticleAndCount } from "@/lib/data/content-engine";
 import { BookOpen, Calendar, ChevronRight } from "lucide-react";

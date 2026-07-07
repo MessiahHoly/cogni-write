@@ -58,7 +58,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
 
         <hr className="my-4" />
 
-        <div className="prose prose-stone dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed text-foreground/90">
+        <div className="prose prose-stone dark:prose-invert max-w-none leading-relaxed text-foreground/90">
+        {/* <div className="prose prose-stone dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed text-foreground/90"> */}
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {bodyMarkdown}
           </ReactMarkdown>

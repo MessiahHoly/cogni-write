@@ -21,16 +21,16 @@ export const POST = async (request: Request) => {
 
       if ('error' in result && result.error) {
         return { error: result.error }
-      }
-      // } else {
-      //   return { data: result.data }
       // }
-
-      if (result.data) {
+      } else {
         return { data: result.data }
       }
 
-      return { error: 'Unknown error occurred.' }
+      // if (result.data) {
+      //   return { data: result.data }
+      // }
+
+      // return { error: 'Unknown error occurred.' }
     })
   )
 

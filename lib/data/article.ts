@@ -110,7 +110,8 @@ Follow these strict formatting and style guidelines:
       const previousResult = await previousPromise
 
       // Circuit Breaker: If data exists, bypass remaining steps and cascade down
-      if (previousResult.data) {
+      if (previousResult?.data) {
+      // if (previousResult.data) {
         return previousResult
       }
 

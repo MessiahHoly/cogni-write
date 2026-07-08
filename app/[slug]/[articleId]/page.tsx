@@ -16,10 +16,11 @@ export const generateMetadata = async ({ params }: { params: Promise<{ slug: str
 
   const textLines = article.content.split("\n")
   const parsedTitle = textLines[0].replace(/^#\s*/, "") || "Untitled Article"
+  const descriptionSnippet = textLines.slice(1).join(" ").trim().substring(0, 150) + "...";
 
   return {
-    title: article.topic,
-    description: parsedTitle,
+    title: parsedTitle,
+    description: descriptionSnippet,
   }
 }
 
@@ -59,7 +60,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
         <hr className="my-4" />
 
         <div className="prose prose-stone dark:prose-invert max-w-none leading-relaxed text-foreground/90">
-        {/* <div className="prose prose-stone dark:prose-invert max-w-none whitespace-pre-wrap leading-relaxed text-foreground/90"> */}
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {bodyMarkdown}
           </ReactMarkdown>

@@ -19,8 +19,9 @@ export const POST = async (request: Request) => {
       const result = await generateAndSaveArticle(contentEngine)
       // const { data, error } = await generateAndSaveArticle(contentEngine)
 
-      if ('error' in result && result.error) {
-        return { error: result.error }
+      if ('error' in result) {
+      // if ('error' in result && result.error) {
+        return { error: result.error || 'Unknown error occurred.' }
       // }
       } else {
         return { data: result.data }

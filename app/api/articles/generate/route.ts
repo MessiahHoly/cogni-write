@@ -16,13 +16,21 @@ export const POST = async (request: Request) => {
 
   const results = await Promise.all(
     contentEngines.map(async contentEngine => {
-      const { data, error } = await generateAndSaveArticle(contentEngine)
+      const result = await generateAndSaveArticle(contentEngine)
+      // const { data, error } = await generateAndSaveArticle(contentEngine)
 
-      if (error || !data) {
-        return { error: error || 'Unknown error occurred.' }
-      } else {
-        return { data }
+      if ('error' in result && result.error) {
+        return { error: result.error }
       }
+      // } else {
+      //   return { data: result.data }
+      // }
+
+      if (result.data) {
+        return { data: result.data }
+      }
+
+      return { error: 'Unknown error occurred.' }
     })
   )
 

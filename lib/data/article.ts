@@ -68,7 +68,6 @@ const attemptGeneration =
 export const generateAndSaveArticle = async (contentEngine: ContentEngine) => {
   const articles = await fetchArticleByContentEngineId(contentEngine.id)
   const titles = articles.map(({ content }) => content.split('\n')[0].replace(/^#\s*/, '').trim())
-  // console.log(`Existing titles for content engine "${contentEngine.topic}":`, titles)
   const historyContext = titles.length > 0
     ? `\nHere are the titles of articles you have already written on this topic:\n${titles.map((title, i) => `${i + 1}. "${title}"`).join('\n')}\n\nCRITICAL MANDATE: Do not duplicate the angles, hooks, or core structures used in these past titles. You must provide a fresh perspective, evolve the narrative, or focus on a different sub-angle of the topic.`
     : '\nThis is the first article for this topic. Establish a foundational overview.';
@@ -99,26 +98,41 @@ Follow these strict formatting and style guidelines:
 
   const attemptGenerationWithTopicContentsAndSystemInstruction = attemptGeneration(contentEngine)(contents)(systemInstruction)
 
+  const pipelinePromises = MODELS_FALLBACK_CHAIN.map(model => attemptGenerationWithTopicContentsAndSystemInstruction(model))
+
+  const rawResults = await Promise.all(pipelinePromises)
+
   // 2. Exact return contract type inference
   type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithTopicContentsAndSystemInstruction>>
 
-  // Explicit type matching: initialized with data: undefined matching our pipeline returns
-  const initialAccumulator = Promise.resolve({ error: 'INITIAL_TRIGGER', data: undefined } as PipelineResult)
+  const isSuccessResponse = (result: PipelineResult): result is { data: any } => !('error' in result)
 
-  return await MODELS_FALLBACK_CHAIN.reduce<Promise<PipelineResult>>(
-    async (previousPromise, currentModel) => {
-      const previousResult = await previousPromise
+  const successfulArticles = rawResults.filter(isSuccessResponse).map(result => result.data)
 
-      // Circuit Breaker: If data exists, bypass remaining steps and cascade down
-      if (previousResult?.data) {
-      // if (previousResult.data) {
-        return previousResult
-      }
+  if (successfulArticles.length === 0) {
+    return { error: 'All attempts to generate an article failed.' }
+  }
 
-      return attemptGenerationWithTopicContentsAndSystemInstruction(currentModel)
-    },
-    initialAccumulator
-  )
+  return { data: successfulArticles }
+
+  // // Explicit type matching: initialized with data: undefined matching our pipeline returns
+  // const initialAccumulator = Promise.resolve({ error: 'INITIAL_TRIGGER', data: undefined } as PipelineResult)
+
+  // return await MODELS_FALLBACK_CHAIN.reduce<Promise<PipelineResult>>(
+  //   async (previousPromise, currentModel) => {
+  //     const previousResult = await previousPromise
+
+  //     // Circuit Breaker: If data exists, bypass remaining steps and cascade down
+  //     // if (previousResult?.data) {
+  //     // if (previousResult.data) {
+  //     if (!('error' in previousResult)) {
+  //       return previousResult
+  //     }
+
+  //     return attemptGenerationWithTopicContentsAndSystemInstruction(currentModel)
+  //   },
+  //   initialAccumulator
+  // )
 }
 
 export const fetchArticleBySlugAndId = (slug: string) => (id: string) =>

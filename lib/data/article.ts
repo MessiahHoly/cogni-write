@@ -104,8 +104,9 @@ Follow these strict formatting and style guidelines:
 
   // 2. Exact return contract type inference
   type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithTopicContentsAndSystemInstruction>>
+  type SuccessfulArticleResult = Extract<PipelineResult, { data: unknown }>
 
-  const isSuccessResponse = (result: PipelineResult): result is { data: any } => !('error' in result)
+  const isSuccessResponse = (result: PipelineResult): result is SuccessfulArticleResult => !('error' in result)
 
   const successfulArticles = rawResults.filter(isSuccessResponse).map(result => result.data)
 

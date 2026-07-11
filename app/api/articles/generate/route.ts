@@ -3,10 +3,11 @@ import {
   generateAndSaveArticle,
 } from "@/lib/data/article"
 import { prisma } from "@/lib/data/prisma"
+import { revalidatePath } from "next/cache"
 
 export const POST = async (request: Request) => {
   const apiKey = request.headers.get("x-api-key")
-  const vercelCronSecret=request.headers.get("Authorization")
+  const vercelCronSecret = request.headers.get("Authorization")
 
   const expectedKey = process.env.ARTICLE_GENERATION_KEY
   const expectedVercelCronSecret = process.env.CRON_SECRET
@@ -31,6 +32,9 @@ export const POST = async (request: Request) => {
       }
     })
   )
+
+  revalidatePath("/")
+  contentEngines.map(({ slug }) => revalidatePath(`/${slug}`))
 
   return NextResponse.json(results)
 }

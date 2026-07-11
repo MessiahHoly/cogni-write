@@ -74,11 +74,24 @@ npm install
 Create a `.env` file in the root directory:
 
 ```env
+# Database & Core Services
 DATABASE_URL="your-postgresql-connection-string"
 GEMINI_API_KEY="your-google-gemini-api-key"
+
+# Secured API Cron Keys
 ARTICLE_GENERATION_KEY="your-custom-manual-trigger-secret"
 CRON_SECRET="your-vercel-cron-secret-fallback"
 
+# Authentication (Better-Auth)
+# Generate a secure 32-character base64 string via terminal: # openssl rand -base64 32
+BETTER_AUTH_SECRET="your-generated-random-string"
+
+# Email Services (Resend)
+RESEND_API_KEY="re_your_secret_resend_api_key"
+RESEND_FROM_EMAIL="Cogni-Write <onboarding@resend.dev>"
+
+# Application Roles
+ADMIN="admin-email@example.com"
 ```
 
 ### 4. Run Migrations & Start Development

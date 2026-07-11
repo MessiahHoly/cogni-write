@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cogni-Write 🚀
 
-## Getting Started
+Cogni-Write is an automated digital journalism platform designed to curate and generate deep-dive articles across specialized niche topics. Built with a robust functional programming mindset, the application utilizes a highly resilient multi-model fallback chain to ensure continuous content generation even under volatile API environments.
 
-First, run the development server:
+Live Demo: [https://cogni-write.vercel.app/](https://cogni-write.vercel.app/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 💡 The Core Concept
+
+Passion projects thrive on depth, but keeping up with content generation across highly specific, specialized niches can be a bottleneck. Cogni-Write acts as an automated curation engine. By configuring a `ContentEngine` for a particular topic, the platform acts as an independent digital journalist—analyzing historical outputs to prevent repetitive angles, prompting generative AI with advanced editorial guidelines, and committing fully type-safe articles straight to the database.
+
+---
+
+## 🛠️ Tech Stack & Architecture
+
+* **Framework:** Next.js 16 (App Router with Turbopack)
+* **Database ORM:** Prisma Client linked to a PostgreSQL database (Neon)
+* **AI Engine:** `@google/genai` (Google AI integration)
+* **Validation:** Zod (Fully type-safe validation schema structures)
+* **Styling:** Tailwind CSS & Shadcn UI
+
+### Technical Highlights
+
+1. **Pure Functional Error Handling:** The internal architecture rejects standard, crash-prone runtime exceptions (`try/catch` leaks). Instead, core pipelines leverage a functional **Result State Monad** (`{ data } | { error }`), capturing failures as clean, predictable values.
+2. **Resilient AI Fallback Chain:** To tackle API limitations or transient model failures, content generation is mapped asynchronously across a structured cascading tier:
+* `gemma-4-31b-it` (Primary)
+* `gemma-4-26b-a4b-it` (Secondary)
+* `gemma-2.5-flash` (Resilient Baseline)
+
+
+3. **Optimized Database Memoization:** Leverages React's native `cache()` layers to globally deduplicate identical Prisma connection lookups between Next.js' dynamic metadata generation and the main page components.
+4. **Automated On-Demand Vercel Crons:** Automatically processes daily generation triggers via highly secure Vercel system cron routing headers paired with on-demand static page revalidation (`revalidatePath`).
+
+---
+
+## 📂 Project Structure
+
+```text
+├── app/
+│   ├── api/articles/generate/  # Secured automated CRON/POST endpoint
+│   └── [slug]/[articleId]/     # Memoized dynamic article rendering
+├── components/                 # Shared Shadcn visual layout elements
+├── lib/
+│   ├── data/
+│   │   ├── article.ts          # Core FP generation fallback engine
+│   │   └── prisma.ts           # Central Prisma Client broker
+│   └── schemas/                # Zod structural runtime validation
+└── prisma/                     # Database layout definition & migrations
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Getting Started Locally
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 1. Clone the repository
 
-## Learn More
+```bash
+git clone https://github.com/MessiahHoly/cogni-write.git
+cd cogni-write
 
-To learn more about Next.js, take a look at the following resources:
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Install dependencies
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm install
 
-## Deploy on Vercel
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 3. Setup Environment Variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Create a `.env` file in the root directory:
+
+```env
+DATABASE_URL="your-postgresql-connection-string"
+GEMINI_API_KEY="your-google-gemini-api-key"
+ARTICLE_GENERATION_KEY="your-custom-manual-trigger-secret"
+CRON_SECRET="your-vercel-cron-secret-fallback"
+
+```
+
+### 4. Run Migrations & Start Development
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+npm run dev
+
+```
+
+Open [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) with your browser to see the application.

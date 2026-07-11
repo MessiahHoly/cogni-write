@@ -3,6 +3,7 @@ import { CreateArticleSchema } from "../schemas/article"
 import { prisma } from "./prisma"
 import { GoogleGenAI } from "@google/genai"
 import { ContentEngine } from "@/generated/prisma/browser"
+import { cache } from "react"
 
 const fetchArticleByContentEngineId = (contentEngineId: string) => {
   return prisma.article.findMany({
@@ -13,7 +14,6 @@ const fetchArticleByContentEngineId = (contentEngineId: string) => {
 }
 
 const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => async (content: string) => {
-  // export const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => async (content: string) => {
   const result = CreateArticleSchema.safeParse({
     topic: contentEngine.topic,
     content,
@@ -45,7 +45,6 @@ const ai = new GoogleGenAI({})
 const attemptGeneration =
   (contentEngine: ContentEngine) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
     console.log(`Attempting generation with ${model}...`)
-    // const topic = contentEngine.topic
 
     try {
       const response = await ai.models.generateContent({
@@ -115,29 +114,11 @@ Follow these strict formatting and style guidelines:
   }
 
   return { data: successfulArticles }
-
-  // // Explicit type matching: initialized with data: undefined matching our pipeline returns
-  // const initialAccumulator = Promise.resolve({ error: 'INITIAL_TRIGGER', data: undefined } as PipelineResult)
-
-  // return await MODELS_FALLBACK_CHAIN.reduce<Promise<PipelineResult>>(
-  //   async (previousPromise, currentModel) => {
-  //     const previousResult = await previousPromise
-
-  //     // Circuit Breaker: If data exists, bypass remaining steps and cascade down
-  //     // if (previousResult?.data) {
-  //     // if (previousResult.data) {
-  //     if (!('error' in previousResult)) {
-  //       return previousResult
-  //     }
-
-  //     return attemptGenerationWithTopicContentsAndSystemInstruction(currentModel)
-  //   },
-  //   initialAccumulator
-  // )
 }
 
-export const fetchArticleBySlugAndId = (slug: string) => (id: string) =>
-  prisma.article.findUnique({
+export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(async () => {
+  return prisma.article.findUnique({
     where: { id, contentEngine: { slug } },
     include: { contentEngine: true }
   })
+})()

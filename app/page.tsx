@@ -11,7 +11,7 @@ export default async function Home() {
       {/* Hero Banner Area */}
       <div className="text-center py-12 space-y-4 border-b">
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-          Knowledge Channels
+          Cogni Write
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-left">
           Explore automated, deep-dive articles curated across specialized niche topics.

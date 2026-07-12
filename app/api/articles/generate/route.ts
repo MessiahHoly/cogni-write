@@ -5,7 +5,8 @@ import {
 import { prisma } from "@/lib/data/prisma"
 import { revalidatePath } from "next/cache"
 
-export const POST = async (request: Request) => {
+const handleArticleGeneration = async (request: Request) => {
+// export const POST = async (request: Request) => {
   const apiKey = request.headers.get("x-api-key")
   const vercelCronSecret = request.headers.get("Authorization")
 
@@ -38,3 +39,6 @@ export const POST = async (request: Request) => {
 
   return NextResponse.json(results)
 }
+
+export const POST = async (request: Request) => handleArticleGeneration(request)
+export const GET = async (request: Request) => handleArticleGeneration(request)

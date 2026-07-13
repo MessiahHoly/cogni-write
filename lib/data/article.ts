@@ -95,25 +95,47 @@ Follow these strict formatting and style guidelines:
 - Cleanliness: Do NOT include placeholders like "[Your Name]", "[Date]", or meta-commentary. Start directly with the article title.
 `;
 
+  //TODO: feed past content to the AI to avoid repeating past content and angles. This will require a more sophisticated prompt engineering approach, potentially involving summarization of past articles and feeding that summary into the system instruction.
+
   const attemptGenerationWithTopicContentsAndSystemInstruction = attemptGeneration(contentEngine)(contents)(systemInstruction)
 
-  const pipelinePromises = MODELS_FALLBACK_CHAIN.map(model => attemptGenerationWithTopicContentsAndSystemInstruction(model))
-
-  const rawResults = await Promise.all(pipelinePromises)
-
-  // 2. Exact return contract type inference
   type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithTopicContentsAndSystemInstruction>>
-  type SuccessfulArticleResult = Extract<PipelineResult, { data: unknown }>
 
-  const isSuccessResponse = (result: PipelineResult): result is SuccessfulArticleResult => !('error' in result)
+  const initialAccumulator = Promise.resolve<PipelineResult>({ error: 'No attempts made yet.' })
 
-  const successfulArticles = rawResults.filter(isSuccessResponse).map(result => result.data)
+  const finalPipelineResult = await MODELS_FALLBACK_CHAIN.reduce(async (accumulatorPromise, model) => {
+    const resolvedAccumulator = await accumulatorPromise
 
-  if (successfulArticles.length === 0) {
+    if ('data' in resolvedAccumulator) {
+      return resolvedAccumulator
+    }
+
+    return attemptGenerationWithTopicContentsAndSystemInstruction(model)
+  }, initialAccumulator)
+
+  if('error' in finalPipelineResult) {
     return { error: 'All attempts to generate an article failed.' }
   }
 
-  return { data: successfulArticles }
+  return { data: finalPipelineResult.data }
+
+  // const pipelinePromises = MODELS_FALLBACK_CHAIN.map(model => attemptGenerationWithTopicContentsAndSystemInstruction(model))
+
+  // const rawResults = await Promise.all(pipelinePromises)
+
+  // // 2. Exact return contract type inference
+  // // type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithTopicContentsAndSystemInstruction>>
+  // type SuccessfulArticleResult = Extract<PipelineResult, { data: unknown }>
+
+  // const isSuccessResponse = (result: PipelineResult): result is SuccessfulArticleResult => !('error' in result)
+
+  // const successfulArticles = rawResults.filter(isSuccessResponse).map(result => result.data)
+
+  // if (successfulArticles.length === 0) {
+  //   return { error: 'All attempts to generate an article failed.' }
+  // }
+
+  // return { data: successfulArticles }
 }
 
 export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(async () => {

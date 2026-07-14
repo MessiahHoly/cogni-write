@@ -50,7 +50,11 @@ const attemptGeneration =
       const response = await ai.models.generateContent({
         model,
         contents,
-        config: { systemInstruction }
+        config: {
+          systemInstruction,
+          temperature: 0.8,
+          topP: 0.95,
+        },
       })
 
       const { text } = response
@@ -66,9 +70,18 @@ const attemptGeneration =
 
 export const generateAndSaveArticle = async (contentEngine: ContentEngine) => {
   const articles = await fetchArticleByContentEngineId(contentEngine.id)
-  const titles = articles.map(({ content }) => content.split('\n')[0].replace(/^#\s*/, '').trim())
-  const historyContext = titles.length > 0
-    ? `\nHere are the titles of articles you have already written on this topic:\n${titles.map((title, i) => `${i + 1}. "${title}"`).join('\n')}\n\nCRITICAL MANDATE: Do not duplicate the angles, hooks, or core structures used in these past titles. You must provide a fresh perspective, evolve the narrative, or focus on a different sub-angle of the topic.`
+  const pastContexts = articles.map(({ content }) => {
+    const lines = content.split('\n').filter(line => line.trim().length > 0)
+    const title = lines[0]?.replace(/^#\s*/, '').trim() || "Untitled"
+    const snippet = lines.slice(1, 4).join(' ').substring(0, 100).trim()
+    return `- Title: ${title} (Context Hook: ${snippet}...)`
+  })
+  // const historyContext = titles.length > 0
+  // ? `\nHere are the titles of articles you have already written on this topic:\n${titles.map((title, i) => `${i + 1}. "${title}"`).join('\n')}\n\nCRITICAL MANDATE: Do not duplicate the angles, hooks, or core structures used in these past titles. You must provide a fresh perspective, evolve the narrative, or focus on a different sub-angle of the topic.`
+  // : '\nThis is the first article for this topic. Establish a foundational overview.';
+
+  const historyContext = pastContexts.length > 0
+    ? `\nHere is a strict summary breakdown of what you have already written on this topic:\n${pastContexts.join('\n')}\n\nCRITICAL MANDATE: You must completely avoid repeating the narrative arcs, specific hooks, sub-arguments, or introductory metaphors detailed above. Pivot to a completely distinct sub-angle or unexplored target demographic.`
     : '\nThis is the first article for this topic. Establish a foundational overview.';
 
   const contents = `
@@ -95,8 +108,6 @@ Follow these strict formatting and style guidelines:
 - Cleanliness: Do NOT include placeholders like "[Your Name]", "[Date]", or meta-commentary. Start directly with the article title.
 `;
 
-  //TODO: feed past content to the AI to avoid repeating past content and angles. This will require a more sophisticated prompt engineering approach, potentially involving summarization of past articles and feeding that summary into the system instruction.
-
   const attemptGenerationWithTopicContentsAndSystemInstruction = attemptGeneration(contentEngine)(contents)(systemInstruction)
 
   type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithTopicContentsAndSystemInstruction>>
@@ -113,29 +124,11 @@ Follow these strict formatting and style guidelines:
     return attemptGenerationWithTopicContentsAndSystemInstruction(model)
   }, initialAccumulator)
 
-  if('error' in finalPipelineResult) {
+  if ('error' in finalPipelineResult) {
     return { error: 'All attempts to generate an article failed.' }
   }
 
   return { data: finalPipelineResult.data }
-
-  // const pipelinePromises = MODELS_FALLBACK_CHAIN.map(model => attemptGenerationWithTopicContentsAndSystemInstruction(model))
-
-  // const rawResults = await Promise.all(pipelinePromises)
-
-  // // 2. Exact return contract type inference
-  // // type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithTopicContentsAndSystemInstruction>>
-  // type SuccessfulArticleResult = Extract<PipelineResult, { data: unknown }>
-
-  // const isSuccessResponse = (result: PipelineResult): result is SuccessfulArticleResult => !('error' in result)
-
-  // const successfulArticles = rawResults.filter(isSuccessResponse).map(result => result.data)
-
-  // if (successfulArticles.length === 0) {
-  //   return { error: 'All attempts to generate an article failed.' }
-  // }
-
-  // return { data: successfulArticles }
 }
 
 export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(async () => {

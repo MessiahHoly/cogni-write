@@ -38,7 +38,7 @@ const resolveUniqueSlug = (baseSlug: string) => async (counter = 0): Promise<str
 }
 
 export const validateAndResolveContentEngine = async (rawData: unknown) => {
-  console.log("validateAndResolveContentEngine rawData:", rawData)
+  // console.log("validateAndResolveContentEngine rawData:", rawData)
 
   const shapeResult = CreateContentEngineSchema.safeParse(rawData)
 

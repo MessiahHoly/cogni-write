@@ -1,12 +1,10 @@
 import { getSession } from "@/lib/auth/server";
-import { SignInField } from "./ui/sign-in-field";
+import { SignInField } from "../ui/sign-in-field";
 import {
-  // fetchContentEngine,
   fetchContentEngines
 } from "@/lib/data/content-engine";
 import {
   ArrowRight, FileText,
-  // PlusCircle
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
@@ -16,9 +14,7 @@ import ContentEngineDialog from "./ui/content-engine-dialog";
 
 export default async function Page() {
   const [session,
-    // contentEngine,
     contentEngines] = await Promise.all([getSession(),
-    // fetchContentEngine(),
     fetchContentEngines()])
 
   if (!session) {

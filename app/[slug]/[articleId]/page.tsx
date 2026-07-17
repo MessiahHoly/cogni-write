@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import CommentField from "./ui/comment-field";
+import { SignInField } from "@/app/ui/sign-in-field";
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string, articleId: string }> }) => {
   const { slug, articleId } = await params
@@ -82,12 +83,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
         </h2>
 
         {session?.user.id ? (
-          <CommentField articleId={articleId} onSuccess={() => null} />
+          <CommentField articleId={articleId}
+            // onSuccess={() => null}
+          />
         ) : (
-          <div className="border border-dashed rounded-xl p-6 text-center bg-muted/5">
+          <div className="border border-dashed rounded-xl p-6 text-center bg-muted/5 space-y-10">
             <p className="text-sm text-muted-foreground">
               You must sign in to share a comment.
             </p>
+            <SignInField />
           </div>
         )}
 

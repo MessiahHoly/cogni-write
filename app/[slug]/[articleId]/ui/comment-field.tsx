@@ -7,14 +7,21 @@ import { useActionState } from "react";
 import { createComment } from "@/lib/actions/comment";
 import ButtonField from "@/app/admin/ui/button-field";
 
-export default function CommentField({ articleId, onSuccess }: { articleId: string; onSuccess: () => void }) {
+export default function CommentField({ articleId,
+  // onSuccess
+}: {
+  articleId: string,
+  // onSuccess: () => void
+}) {
   const createCommentWithArticleId = createComment.bind(null, articleId)
   const [state, action, pending] = useActionState(createCommentWithArticleId, null)
 
   if (state?.success) return (
     <div className="flex flex-col gap-10">
       <p>Comment created successfully.</p>
-      <Button className="w-min" onClick={onSuccess}>
+      <Button className="w-min"
+      // onClick={onSuccess}
+      >
         Okay
       </Button>
     </div>
@@ -41,7 +48,9 @@ export default function CommentField({ articleId, onSuccess }: { articleId: stri
               </Field>
             </FieldGroup>
           </FieldSet>
-          <ButtonField children="Save" pending={pending} onCancel={onSuccess} />
+          <ButtonField children="Save" pending={pending}
+            // onCancel={onSuccess}
+          />
         </FieldGroup>
       </form>
     </div>

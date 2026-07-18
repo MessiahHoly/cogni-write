@@ -11,14 +11,14 @@ export default function CommentField({ articleId }: { articleId: string }) {
   const createCommentWithArticleId = createComment.bind(null, articleId)
   const [state, action, pending] = useActionState(createCommentWithArticleId, null)
 
-  if (state?.success) return (
-    <div className="flex flex-col gap-10">
-      <p>Comment created successfully.</p>
-      <Button className="w-min">
-        Okay
-      </Button>
-    </div>
-  )
+  // if (state?.success) return (
+  //   <div className="flex flex-col gap-10">
+  //     <p>Comment created successfully.</p>
+  //     <Button className="w-min">
+  //       Okay
+  //     </Button>
+  //   </div>
+  // )
 
   return (
     <div className="w-full">

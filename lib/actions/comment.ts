@@ -12,7 +12,6 @@ export const createComment = async (articleId: string, initialState: unknown, fo
   if (!session?.user.id) {
     return { success: false, error: "Unauthorised.  Please log in to comment." }
   }
-  //...
 
   const result = CreateCommentSchema.safeParse({ articleId, content: formData.get("content") })
 

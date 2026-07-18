@@ -31,20 +31,16 @@ export default function CommentField({ articleId }: { articleId: string }) {
                   Comment
                 </FieldLabel>
                 <Textarea
-                  id="topic"
+                  id="content"
                   placeholder="Share your thoughts or ask a question about this article..."
-                  // placeholder="Enter a topic for your AI-generated posts..."
                   required
-                  // defaultValue={contentEngine?.topic}
-                  name="topic"
+                  name="content"
                 />
                 {state?.error && <p className="text-sm font-medium text-destructive">{state.error.toString()}</p>}
               </Field>
             </FieldGroup>
           </FieldSet>
-          <ButtonField children="Save" pending={pending}
-          // onCancel={onSuccess}
-          />
+          <ButtonField children="Save" pending={pending} />
         </FieldGroup>
       </form>
     </div>

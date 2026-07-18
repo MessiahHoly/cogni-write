@@ -11,7 +11,7 @@ import { authClient } from "@/lib/auth/auth-client"
 import { SubmitEvent, useState } from "react" // Fixed import
 import ButtonField from "../admin/ui/button-field"
 
-export function SignInField({ callbackURL }: { callbackURL: string }) {
+export function SignInField({ callbackURL, hash }: { callbackURL: string, hash?: string }) {
   const [email, setEmail] = useState("")
   const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [signingIn, setSigningIn] = useState(false)
@@ -33,7 +33,7 @@ export function SignInField({ callbackURL }: { callbackURL: string }) {
     const { data, error: fetchError } = await authClient.signIn.magicLink({
       email,
       callbackURL,
-      // callbackURL: `/admin`,
+      metadata: { hash }
     })
 
     if (fetchError) {

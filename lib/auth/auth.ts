@@ -19,18 +19,21 @@ export const auth = betterAuth({
           return
         };
 
+        const callbackURL = metadata?.hash ? `${url}#${metadata.hash}` : url
+
         try {
           const { data, error } = await resend.emails.send({
             from,
             to: email,
             subject: "Your Magic Link",
-            html: `<p>Click the link below to sign in:</p><p><a href="${url}">Sign In</a></p>`
+            html: `<p>Click the link below to sign in:</p><p><a href="${callbackURL}">Sign In</a></p>`
+            // html: `<p>Click the link below to sign in:</p><p><a href="${url}">Sign In</a></p>`
           })
 
           if (error) {
             console.error("Error sending email:", error);
             return
-          };          
+          };
         } catch (error) {
           console.error("Error sending email:", error);
           return

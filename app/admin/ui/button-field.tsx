@@ -8,6 +8,7 @@ interface ButtonFieldProps {
   pending: boolean;
   children: ReactNode;
   pendingText?: string;
+  showCancel: boolean;
   onCancel?: () => void;
 }
 
@@ -15,7 +16,8 @@ export default function ButtonField({
   pending,
   children,
   pendingText = "Saving...",
-  onCancel
+  onCancel,
+  showCancel
 }: ButtonFieldProps) {
   const router = useRouter();
 
@@ -34,15 +36,16 @@ export default function ButtonField({
         {pending ? pendingText : children}
       </Button>
 
-      <Button
-        variant="outline"
-        type="button"
-        disabled={pending}
-        onClick={handleCancel}
-      // onClick={() => router.back()}
-      >
-        Cancel
-      </Button>
+      {showCancel && (
+        <Button
+          variant="outline"
+          type="button"
+          disabled={pending}
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
+      )}
     </Field>
   );
 }

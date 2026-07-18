@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
@@ -10,15 +10,6 @@ import ButtonField from "@/app/admin/ui/button-field";
 export default function CommentField({ articleId }: { articleId: string }) {
   const createCommentWithArticleId = createComment.bind(null, articleId)
   const [state, action, pending] = useActionState(createCommentWithArticleId, null)
-
-  // if (state?.success) return (
-  //   <div className="flex flex-col gap-10">
-  //     <p>Comment created successfully.</p>
-  //     <Button className="w-min">
-  //       Okay
-  //     </Button>
-  //   </div>
-  // )
 
   return (
     <div className="w-full">
@@ -40,7 +31,7 @@ export default function CommentField({ articleId }: { articleId: string }) {
               </Field>
             </FieldGroup>
           </FieldSet>
-          <ButtonField children="Save" pending={pending} />
+          <ButtonField pending={pending} showCancel={false}>Save</ButtonField>
         </FieldGroup>
       </form>
     </div>

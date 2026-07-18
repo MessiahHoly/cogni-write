@@ -91,7 +91,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
             <p className="text-sm text-muted-foreground">
               You must sign in to share a comment.
             </p>
-            {/* <SignInField callbackURL={`${currentPath}#discussion`} /> */}
             <SignInField callbackURL={`${currentPath}`} hash="discussion" showCancel={false} />
           </div>
         )}
@@ -108,7 +107,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
                   <div className="flex items-center gap-2">
                     <span className="font-semibold">{user.name}</span>
                     <span className="text-xs text-muted-foreground">
-                      {new Date(createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                      {new Date(createdAt).toLocaleString(undefined, {
+                        year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+                      })}
+                      {/* {new Date(createdAt).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })} */}
                     </span>
                   </div>
                   <p className="text-foreground/90 whitespace-pre-wrap">{content}</p>

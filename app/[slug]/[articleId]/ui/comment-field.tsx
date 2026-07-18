@@ -7,21 +7,14 @@ import { useActionState } from "react";
 import { createComment } from "@/lib/actions/comment";
 import ButtonField from "@/app/admin/ui/button-field";
 
-export default function CommentField({ articleId,
-  // onSuccess
-}: {
-  articleId: string,
-  // onSuccess: () => void
-}) {
+export default function CommentField({ articleId }: { articleId: string }) {
   const createCommentWithArticleId = createComment.bind(null, articleId)
   const [state, action, pending] = useActionState(createCommentWithArticleId, null)
 
   if (state?.success) return (
     <div className="flex flex-col gap-10">
       <p>Comment created successfully.</p>
-      <Button className="w-min"
-      // onClick={onSuccess}
-      >
+      <Button className="w-min">
         Okay
       </Button>
     </div>
@@ -39,7 +32,8 @@ export default function CommentField({ articleId,
                 </FieldLabel>
                 <Textarea
                   id="topic"
-                  placeholder="Enter a topic for your AI-generated posts..."
+                  placeholder="Share your thoughts or ask a question about this article..."
+                  // placeholder="Enter a topic for your AI-generated posts..."
                   required
                   // defaultValue={contentEngine?.topic}
                   name="topic"
@@ -49,7 +43,7 @@ export default function CommentField({ articleId,
             </FieldGroup>
           </FieldSet>
           <ButtonField children="Save" pending={pending}
-            // onCancel={onSuccess}
+          // onCancel={onSuccess}
           />
         </FieldGroup>
       </form>

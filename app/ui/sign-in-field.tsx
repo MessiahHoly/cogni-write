@@ -11,7 +11,8 @@ import { authClient } from "@/lib/auth/auth-client"
 import { SubmitEvent, useState } from "react" // Fixed import
 import ButtonField from "../admin/ui/button-field"
 
-export function SignInField({ callbackURL, hash }: { callbackURL: string, hash?: string }) {
+export function SignInField({ callbackURL, showCancel, hash }: { callbackURL: string, showCancel: boolean, hash?: string, }) {
+  // export function SignInField({ callbackURL, hash }: { callbackURL: string, hash?: string }) {
   const [email, setEmail] = useState("")
   const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [signingIn, setSigningIn] = useState(false)
@@ -21,8 +22,6 @@ export function SignInField({ callbackURL, hash }: { callbackURL: string, hash?:
     status: number;
     statusText: string;
   } | null>(null)
-
-  // console.log(callbackURL)
 
   // Changed SubmitEvent to React.FormEvent
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
@@ -88,7 +87,7 @@ export function SignInField({ callbackURL, hash }: { callbackURL: string, hash?:
             </FieldGroup>
           </FieldSet>
           {/* Note: changed children prop usage to standard React children mapping */}
-          <ButtonField pending={signingIn} pendingText="Signing in..." showCancel={true}>
+          <ButtonField pending={signingIn} pendingText="Signing in..." showCancel={showCancel}>
             Sign in
           </ButtonField>
         </FieldGroup>

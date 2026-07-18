@@ -20,7 +20,7 @@ export default async function Page() {
   if (!session) {
     return (
       <main className="p-4 flex flex-col items-center justify-center min-h-screen">
-        <SignInField callbackURL="/admin"/>
+        <SignInField callbackURL="/admin" showCancel={true} />
       </main>
     );
   }

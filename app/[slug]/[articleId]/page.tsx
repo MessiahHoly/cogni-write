@@ -92,7 +92,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
               You must sign in to share a comment.
             </p>
             {/* <SignInField callbackURL={`${currentPath}#discussion`} /> */}
-            <SignInField callbackURL={`${currentPath}`} hash="discussion" />
+            <SignInField callbackURL={`${currentPath}`} hash="discussion" showCancel={false} />
           </div>
         )}
 

@@ -11,7 +11,7 @@ import { authClient } from "@/lib/auth/auth-client"
 import { SubmitEvent, useState } from "react" // Fixed import
 import ButtonField from "../admin/ui/button-field"
 
-export function SignInField() {
+export function SignInField({ callbackURL }: { callbackURL: string }) {
   const [email, setEmail] = useState("")
   const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [signingIn, setSigningIn] = useState(false)
@@ -22,6 +22,8 @@ export function SignInField() {
     statusText: string;
   } | null>(null)
 
+  console.log(callbackURL)
+
   // Changed SubmitEvent to React.FormEvent
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -30,7 +32,8 @@ export function SignInField() {
 
     const { data, error: fetchError } = await authClient.signIn.magicLink({
       email,
-      callbackURL: `/admin`,
+      callbackURL,
+      // callbackURL: `/admin`,
     })
 
     if (fetchError) {
@@ -38,7 +41,7 @@ export function SignInField() {
     } else if (data) {
       setMagicLinkSent(true)
     }
-    
+
     setSigningIn(false)
   }
 
@@ -71,10 +74,10 @@ export function SignInField() {
                   }}
                   type="email"
                   // Accessibility anchor
-                  aria-describedby={error ? "email-error" : undefined} 
+                  aria-describedby={error ? "email-error" : undefined}
                   aria-invalid={!!error}
                 />
-                
+
                 {/* Fixed fallback condition and added id for accessibility */}
                 {error && (
                   <p id="email-error" className="text-sm font-medium text-destructive">

@@ -22,7 +22,7 @@ export function SignInField({ callbackURL, hash }: { callbackURL: string, hash?:
     statusText: string;
   } | null>(null)
 
-  console.log(callbackURL)
+  // console.log(callbackURL)
 
   // Changed SubmitEvent to React.FormEvent
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
@@ -88,7 +88,7 @@ export function SignInField({ callbackURL, hash }: { callbackURL: string, hash?:
             </FieldGroup>
           </FieldSet>
           {/* Note: changed children prop usage to standard React children mapping */}
-          <ButtonField pending={signingIn} pendingText="Signing in...">
+          <ButtonField pending={signingIn} pendingText="Signing in..." showCancel={true}>
             Sign in
           </ButtonField>
         </FieldGroup>

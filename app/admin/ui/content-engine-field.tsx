@@ -43,7 +43,7 @@ export default function ContentEngineField({ contentEngine, onSuccess }: { conte
               </Field>
             </FieldGroup>
           </FieldSet>
-          <ButtonField children="Save" pending={pending} onCancel={onSuccess} />
+          <ButtonField pending={pending} onCancel={onSuccess} showCancel={true}>Save</ButtonField>
         </FieldGroup>
       </form>
     </div>

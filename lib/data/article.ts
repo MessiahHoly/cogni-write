@@ -131,8 +131,6 @@ Follow these strict formatting and style guidelines:
   return { data: finalPipelineResult.data }
 }
 
-//TODO: check the if only ID can be used to fetch an article instead of both slug and ID
-
 export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(async () => {
   return prisma.article.findUnique({
     where: { id, contentEngine: { slug } },

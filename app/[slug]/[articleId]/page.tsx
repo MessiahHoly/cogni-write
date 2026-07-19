@@ -13,7 +13,6 @@ import OnboardingNameField from "./ui/onboarding-name-field";
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string, articleId: string }> }) => {
   const { slug, articleId } = await params
-  //TODO: check if article can be fetched only by articleId
   const article = await fetchArticleBySlugAndId(slug)(articleId)
 
   if (!article) {

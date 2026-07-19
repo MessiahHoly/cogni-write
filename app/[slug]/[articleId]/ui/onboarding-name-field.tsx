@@ -1,3 +1,5 @@
+'use client'
+
 import ButtonField from "@/app/admin/ui/button-field";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";

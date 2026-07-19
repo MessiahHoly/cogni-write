@@ -86,7 +86,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
 
         {session?.user.id ? (
           !session.user.name || session.user.name === session.user.email ? (
-            <OnboardingNameField />
+            <OnboardingNameField currentPath={currentPath} />
           ) : (
             <CommentField articleId={articleId} />
           )
@@ -114,7 +114,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
                       {new Date(createdAt).toLocaleString(undefined, {
                         year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
                       })}
-                      {/* {new Date(createdAt).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })} */}
                     </span>
                   </div>
                   <p className="text-foreground/90 whitespace-pre-wrap">{content}</p>

@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { updateUserName } from "@/lib/actions/user";
 import { useActionState } from "react";
 
-export default function OnboardingNameField() {
-  const [state, action, pending] = useActionState(updateUserName, null)
+export default function OnboardingNameField({ currentPath }: { currentPath: string }) {
+  const updateUserNameWithCurrentPath = updateUserName.bind(null, currentPath)
+  const [state, action, pending] = useActionState(updateUserNameWithCurrentPath, null)
+  // const [state, action, pending] = useActionState(updateUserName, null)
 
   return (
     <div className="border border-primary/20 rounded-xl p-6 bg-primary/5 space-y-4">

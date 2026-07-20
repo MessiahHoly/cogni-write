@@ -14,3 +14,7 @@ export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.fi
     createdAt: 'desc',
   },
 });
+
+export const fetchComments = (cogniUserId: string) => (date: Date) => prisma.comment.findMany({
+  where: { createdAt: { gte: date }, userId: { not: cogniUserId } }, select: { article: true, user: { select: { name: true } } }
+})

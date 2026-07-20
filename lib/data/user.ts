@@ -14,6 +14,7 @@ export const fetchOrCreateCogni = async () => {
     },
     select: {
       name: true,
+      id: true,
       comments: {
         orderBy: { updatedAt: 'desc' },
         take: 1

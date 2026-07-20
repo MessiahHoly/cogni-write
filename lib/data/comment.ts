@@ -18,8 +18,9 @@ export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.fi
   },
 });
 
-export const fetchComments = (cogniUserId: string) => (date: Date) => prisma.comment.findMany({
-  where: { createdAt: { gte: date }, userId: { not: cogniUserId } }, select: { article: true, user: { select: { name: true } } }
+export const fetchNewerCommentsByOtherUsers = (cogniUserId: string) => (date: Date) => prisma.comment.findMany({
+  where: { createdAt: { gte: date }, userId: { not: cogniUserId } },
+  select: { article: true, user: { select: { name: true } }, content: true }
 })
 
 //TODO: move cogni email to env
@@ -61,3 +62,9 @@ const attemptGeneration = (comment: Prisma.CommentGetPayload<{
     return { error: error instanceof Error ? error.message : 'Comment generation by AI failed.' }
   }
 }
+
+export const fetchLatestCommentByUserId = (userId: string) => prisma.comment.findFirst({
+  where: { userId }, orderBy: { createdAt: 'desc' }, take: 1
+})
+
+export const fetchFirstComment = () => prisma.comment.findFirst({ orderBy: { createdAt: 'desc' }, take: 1 })

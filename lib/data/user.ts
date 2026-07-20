@@ -11,8 +11,15 @@ export const fetchOrCreateCogni = async () => {
       name: 'Cogni',
       emailVerified: true,
       id: generateId()
-    }
+    },
+    select: {
+      name: true,
+      comments: {
+        orderBy: { updatedAt: 'desc' },
+        take: 1
+      }
+    },
   })
 
-  return cogni.id
+  return cogni
 }

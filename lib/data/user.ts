@@ -10,7 +10,7 @@ export const fetchOrCreateCogni = async () => {
     where: { email },
     update: {},
     create: {
-      email: 'do-not-reply@messiahholy.com',
+      email,
       name: 'Cogni',
       emailVerified: true,
       id: generateId()

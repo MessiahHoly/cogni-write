@@ -3,8 +3,11 @@ import { prisma } from "./prisma"
 
 export const fetchOrCreateCogni = async () => {
   // const id = generateId()
+  const email = process.env.COGNI_EMAIL
+
+  if (!email) return { error: "Email not speficied." }
   const cogni = await prisma.user.upsert({
-    where: { email: 'do-not-reply@messiahholy.com' },
+    where: { email },
     update: {},
     create: {
       email: 'do-not-reply@messiahholy.com',
@@ -22,5 +25,5 @@ export const fetchOrCreateCogni = async () => {
     },
   })
 
-  return cogni
+  return { data: cogni }
 }

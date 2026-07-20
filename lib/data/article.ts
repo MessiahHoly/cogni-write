@@ -4,6 +4,8 @@ import { prisma } from "./prisma"
 import { GoogleGenAI } from "@google/genai"
 import { ContentEngine } from "@/generated/prisma/browser"
 import { cache } from "react"
+import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai"
+import { ai } from "./ai"
 
 const fetchArticleByContentEngineId = (contentEngineId: string) => {
   return prisma.article.findMany({
@@ -32,15 +34,15 @@ const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => a
   return { data: article }
 }
 
-export const MODELS_FALLBACK_CHAIN = [
-  'gemma-4-31b-it',
-  'gemma-4-26b-a4b-it',
-  'gemma-2.5-flash'
-] as const
+// export const MODELS_FALLBACK_CHAIN = [
+//   'gemma-4-31b-it',
+//   'gemma-4-26b-a4b-it',
+//   'gemma-2.5-flash'
+// ] as const
 
-type GemmaModel = typeof MODELS_FALLBACK_CHAIN[number]
+// type GemmaModel = typeof MODELS_FALLBACK_CHAIN[number]
 
-const ai = new GoogleGenAI({})
+// const ai = new GoogleGenAI({})
 
 const attemptGeneration =
   (contentEngine: ContentEngine) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
@@ -76,9 +78,6 @@ export const generateAndSaveArticle = async (contentEngine: ContentEngine) => {
     const snippet = lines.slice(1, 4).join(' ').substring(0, 100).trim()
     return `- Title: ${title} (Context Hook: ${snippet}...)`
   })
-  // const historyContext = titles.length > 0
-  // ? `\nHere are the titles of articles you have already written on this topic:\n${titles.map((title, i) => `${i + 1}. "${title}"`).join('\n')}\n\nCRITICAL MANDATE: Do not duplicate the angles, hooks, or core structures used in these past titles. You must provide a fresh perspective, evolve the narrative, or focus on a different sub-angle of the topic.`
-  // : '\nThis is the first article for this topic. Establish a foundational overview.';
 
   const historyContext = pastContexts.length > 0
     ? `\nHere is a strict summary breakdown of what you have already written on this topic:\n${pastContexts.join('\n')}\n\nCRITICAL MANDATE: You must completely avoid repeating the narrative arcs, specific hooks, sub-arguments, or introductory metaphors detailed above. Pivot to a completely distinct sub-angle or unexplored target demographic.`

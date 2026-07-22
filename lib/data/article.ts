@@ -34,16 +34,6 @@ const createArticle = (contentEngine: ContentEngine) => (modelUsed: string) => a
   return { data: article }
 }
 
-// export const MODELS_FALLBACK_CHAIN = [
-//   'gemma-4-31b-it',
-//   'gemma-4-26b-a4b-it',
-//   'gemma-2.5-flash'
-// ] as const
-
-// type GemmaModel = typeof MODELS_FALLBACK_CHAIN[number]
-
-// const ai = new GoogleGenAI({})
-
 const attemptGeneration =
   (contentEngine: ContentEngine) => (contents: string) => (systemInstruction: string) => async (model: GemmaModel) => {
     console.log(`Attempting generation with ${model}...`)

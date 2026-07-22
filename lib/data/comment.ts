@@ -1,7 +1,9 @@
-import { Prisma } from "@/generated/prisma/client";
+import { Comment, Prisma } from "@/generated/prisma/client";
 import { prisma } from "./prisma";
-import { GemmaModel } from "../schemas/ai";
+import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai";
 import { ai } from "./ai";
+import { verifyRouteAuth } from "../auth/server";
+import { fetchOrCreateCogni } from "./user";
 
 export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.findMany({
   where: { articleId },
@@ -20,14 +22,14 @@ export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.fi
 
 export const fetchNewerCommentsByOtherUsers = (cogniUserId: string) => (date: Date) => prisma.comment.findMany({
   where: { createdAt: { gte: date }, userId: { not: cogniUserId } },
-  select: { article: true, user: { select: { name: true } }, content: true }
+  select: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } }, content: true }
 })
 
 //TODO: move cogni email to env
 
-const attemptGeneration = (comment: Prisma.CommentGetPayload<{
+export const attemptGeneration = (systemInstruction: string) => (comment: Prisma.CommentGetPayload<{
   select: { user: { select: { name: true } }, article: true, content: true }
-}>) => (systemInstruction: string) => async (model: GemmaModel) => {
+}>) => async (model: GemmaModel) => {
   const { article, content, user } = comment
   const contents = `${user.name} posted a comment.  The details as follows:
   
@@ -68,3 +70,90 @@ export const fetchLatestCommentByUserId = (userId: string) => prisma.comment.fin
 })
 
 export const fetchFirstComment = () => prisma.comment.findFirst({ orderBy: { createdAt: 'desc' }, take: 1 })
+
+export const generateAndSaveComment = async (comment: Prisma.CommentGetPayload<{
+  select: { user: { select: { name: true } }, article: true, content: true }
+}>) => {
+  const attemptGenerationWithSystemInstructionAndComment = attemptGeneration('')(comment)
+
+  type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithSystemInstructionAndComment>>
+  const initialAccumulator = Promise.resolve<PipelineResult>({ error: 'No attempts made yet.' })
+
+  const finalPipelineResult = await MODELS_FALLBACK_CHAIN.reduce(async (accumulatorPromise, model) => {
+    const resolvedAccumulator = await accumulatorPromise
+
+    if ('data' in resolvedAccumulator) {
+      return resolvedAccumulator
+    }
+
+    return attemptGenerationWithSystemInstructionAndComment(model)
+  }, initialAccumulator)
+
+  if ('error' in finalPipelineResult) {
+    return { error: 'All attempts to generate an article failed.' }
+  }
+
+  return { data: finalPipelineResult.data }
+}
+
+export const generateComments = async (request: Request) => {
+  const authFailed = verifyRouteAuth(request)
+  if (authFailed) return authFailed
+
+  const { data, error } = await fetchOrCreateCogni()
+  if (!data) return { error }
+
+  const [latestCommentByCogni, firstComment] = await Promise.all([fetchLatestCommentByUserId(data.id), fetchFirstComment()])
+
+  const date = latestCommentByCogni ? latestCommentByCogni.createdAt : firstComment?.createdAt
+
+  if (!date) return { error: "No existing comment." }
+
+  const comments = await fetchNewerCommentsByOtherUsers(data.id)(date)
+  const attemptGenerationWithsystemInstruction = attemptGeneration('')
+
+  const commentsByCogni = comments.map(async comment => {
+    const attemptGenerationWithComment = attemptGenerationWithsystemInstruction(comment)
+
+    type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithComment>>
+    const initialAccumulator = Promise.resolve<PipelineResult>({ error: 'No attempts made yet.' })
+
+    const commentsByCogni = await MODELS_FALLBACK_CHAIN.reduce(async (accumulatorPromise, model) => {
+      const resolvedAccumulator = await accumulatorPromise
+
+      if ('data' in resolvedAccumulator) {
+        return resolvedAccumulator
+      }
+
+      return attemptGenerationWithComment(model)
+    }, initialAccumulator)
+
+    return commentsByCogni
+  })
+
+  return commentsByCogni
+
+  // const attemptGenerationWithComments = comments.map(comment => attemptGenerationWithsystemInstruction(comment))
+  // const generated = MODELS_FALLBACK_CHAIN.reduce(async (accumulatorPromise, model) => {
+  //   const resolvedAccumulator = await accumulatorPromise
+
+
+  // }, { error: 'No attempts made yet.' })
+
+  // type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithsystemInstruction>>
+
+  // const initialAccumulator = Promise.resolve<PipelineResult>({ error: 'No attempts made yet.' })
+
+  // const commentsByCogni = comments.map(comment => {
+  //   const attemtGenerationWithComment = attemptGenerationWithsystemInstruction(comment)
+  //   const generated = MODELS_FALLBACK_CHAIN.reduce(async (accumulatorPromise, model) => {
+  //     const resolvedAccumulator = await accumulatorPromise
+
+  //     if ('data' in resolvedAccumulator) {
+  //       return resolvedAccumulator
+  //     }
+
+  //     return attemtGenerationWithComment(model)
+  //   },)
+  // })
+}

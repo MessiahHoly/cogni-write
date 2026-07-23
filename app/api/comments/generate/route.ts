@@ -2,7 +2,6 @@ import { verifyRouteAuth } from "@/lib/auth/server"
 import {
   createComment,
   fetchFirstComment, fetchLatestCommentByUserId, fetchNewerCommentsByOtherUsers,
-  // generateAndSaveComment,
   generateComment
 } from "@/lib/data/comment"
 import { fetchOrCreateCogni } from "@/lib/data/user"
@@ -14,11 +13,10 @@ const handleCommentGeneration = async (request: Request) => {
   if (authFailed) return authFailed
 
   //TODO: check if {data: {data|error}|error} should be returned. Same for article route. 
+  //TODO: check if generate functions can be refactored
 
   const { data: cogni, error } = await fetchOrCreateCogni()
-  if (!cogni) return NextResponse.json({ error })
-  // const { data, error } = await fetchOrCreateCogni()
-  // if (!data) return NextResponse.json({ error })
+  if (!cogni) return NextResponse.json({ error }, { status: 400 })
 
   const [latestCommentByCogni, firstComment] = await Promise.all([fetchLatestCommentByUserId(cogni.id), fetchFirstComment()])
 
@@ -27,8 +25,6 @@ const handleCommentGeneration = async (request: Request) => {
   if (!date) return NextResponse.json({ error: "No existing comment." })
 
   const comments = await fetchNewerCommentsByOtherUsers(cogni.id)(date)
-
-  // console.log(comments)
 
   const results = await Promise.all(
     comments.map(async comment => {

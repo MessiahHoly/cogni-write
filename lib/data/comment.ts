@@ -29,7 +29,16 @@ export const fetchNewerCommentsByOtherUsers = (cogniUserId: string) => (date: Da
   select: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } }, content: true }
 })
 
-//TODO: move cogni email to env
+const COGNI_SYSTEM_INSTRUCTION = `
+You are Cogni, an insightful, warm, and engaged community member commenting on an online article.
+
+RULES:
+1. Write EXACTLY ONE natural comment reply. Never offer options, meta-commentary, lists of choices, bullet points, or markdown headers.
+2. Speak naturally, like a real person replying on a forum. Match the user's conversational tone.
+3. Keep it concise (1 to 3 short paragraphs max).
+4. Direct your response to the specific question or point the user raised in their comment, referencing the article's context when relevant.
+5. Do NOT start with meta-intros like "Here is a reply:" or "Option 1:". Dive straight into the reply.
+`;
 
 export const attemptGeneration = (systemInstruction: string) => (comment: Prisma.CommentGetPayload<{
   select: { user: { select: { name: true } }, article: true, content: true }
@@ -37,13 +46,15 @@ export const attemptGeneration = (systemInstruction: string) => (comment: Prisma
   const { article, content, user } = comment
   const contents = `${user.name} posted a comment.  The details as follows:
   
-  Topic: ${article.topic}
+  Article Topic: ${article.topic}
   Article Content: ${article.content}
   
-  User's Comment: ${content}
-  User's Name: ${user.name}
+  Comment by ${user.name}: "${content}"
+
+  Write a direct, natural reply as Cogni responding to ${user.name}.
   
-  Can you create a reply to the comment?`
+  CRITICAL: Output ONLY Cogni's direct, conversational reply as plain text. Do NOT provide options, bullet points, meta-intros, or markdown headers.`
+
   console.log(`Attempting generation with ${model}...`)
 
   try {
@@ -52,8 +63,8 @@ export const attemptGeneration = (systemInstruction: string) => (comment: Prisma
       contents,
       config: {
         systemInstruction,
-        temperature: 0.8,
-        topP: 0.95,
+        temperature: 0.7,
+        topP: 0.9,
       },
     })
 
@@ -75,10 +86,9 @@ export const fetchLatestCommentByUserId = (userId: string) => prisma.comment.fin
 export const fetchFirstComment = () => prisma.comment.findFirst({ orderBy: { createdAt: 'desc' }, take: 1 })
 
 export const generateComment = async (comment: Prisma.CommentGetPayload<{
-// export const generateAndSaveComment = async (comment: Prisma.CommentGetPayload<{
   select: { user: { select: { name: true } }, article: true, content: true }
 }>) => {
-  const attemptGenerationWithSystemInstructionAndComment = attemptGeneration('')(comment)
+  const attemptGenerationWithSystemInstructionAndComment = attemptGeneration(COGNI_SYSTEM_INSTRUCTION)(comment)
 
   type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithSystemInstructionAndComment>>
   const initialAccumulator = Promise.resolve<PipelineResult>({ error: 'No attempts made yet.' })
@@ -100,7 +110,7 @@ export const generateComment = async (comment: Prisma.CommentGetPayload<{
   return { data: finalPipelineResult.data }
 }
 
-export const generateComments = async (request: Request) => {
+const generateComments = async (request: Request) => {
   const authFailed = verifyRouteAuth(request)
   if (authFailed) return authFailed
 
@@ -114,7 +124,7 @@ export const generateComments = async (request: Request) => {
   if (!date) return { error: "No existing comment." }
 
   const comments = await fetchNewerCommentsByOtherUsers(data.id)(date)
-  const attemptGenerationWithsystemInstruction = attemptGeneration('')
+  const attemptGenerationWithsystemInstruction = attemptGeneration(COGNI_SYSTEM_INSTRUCTION)
 
   const commentsByCogni = comments.map(async comment => {
     const attemptGenerationWithComment = attemptGenerationWithsystemInstruction(comment)

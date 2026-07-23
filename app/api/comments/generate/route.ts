@@ -28,9 +28,10 @@ const handleCommentGeneration = async (request: Request) => {
 
   const comments = await fetchNewerCommentsByOtherUsers(cogni.id)(date)
 
+  // console.log(comments)
+
   const results = await Promise.all(
     comments.map(async comment => {
-      // const result = await generateAndSaveComment(comment)
       const result = await generateComment(comment)
 
       if ('error' in result) {

@@ -1,14 +1,14 @@
 'use client'
 
-// import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
-import { createComment } from "@/lib/actions/comment";
+// import { createComment } from "@/lib/actions/comment";
 import ButtonField from "@/app/admin/ui/button-field";
+import { createCommentAction } from "@/lib/actions/comment";
 
 export default function CommentField({ articleId }: { articleId: string }) {
-  const createCommentWithArticleId = createComment.bind(null, articleId)
+  const createCommentWithArticleId = createCommentAction.bind(null, articleId)
   const [state, action, pending] = useActionState(createCommentWithArticleId, null)
 
   return (

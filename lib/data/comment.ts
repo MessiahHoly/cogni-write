@@ -1,9 +1,13 @@
-import { Comment, Prisma } from "@/generated/prisma/client";
+import {
+  // Comment,
+  Prisma
+} from "@/generated/prisma/client";
 import { prisma } from "./prisma";
 import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai";
 import { ai } from "./ai";
 import { verifyRouteAuth } from "../auth/server";
 import { fetchOrCreateCogni } from "./user";
+import { CreateCommentInput } from "../schemas/comment";
 
 export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.findMany({
   where: { articleId },
@@ -58,7 +62,6 @@ export const attemptGeneration = (systemInstruction: string) => (comment: Prisma
       error: 'Text is empty.',
     }
 
-    // return await createArticle(contentEngine)(model)(text)
     return { data: { text } }
   } catch (error) {
     return { error: error instanceof Error ? error.message : 'Comment generation by AI failed.' }
@@ -71,7 +74,8 @@ export const fetchLatestCommentByUserId = (userId: string) => prisma.comment.fin
 
 export const fetchFirstComment = () => prisma.comment.findFirst({ orderBy: { createdAt: 'desc' }, take: 1 })
 
-export const generateAndSaveComment = async (comment: Prisma.CommentGetPayload<{
+export const generateComment = async (comment: Prisma.CommentGetPayload<{
+// export const generateAndSaveComment = async (comment: Prisma.CommentGetPayload<{
   select: { user: { select: { name: true } }, article: true, content: true }
 }>) => {
   const attemptGenerationWithSystemInstructionAndComment = attemptGeneration('')(comment)
@@ -132,28 +136,9 @@ export const generateComments = async (request: Request) => {
   })
 
   return commentsByCogni
-
-  // const attemptGenerationWithComments = comments.map(comment => attemptGenerationWithsystemInstruction(comment))
-  // const generated = MODELS_FALLBACK_CHAIN.reduce(async (accumulatorPromise, model) => {
-  //   const resolvedAccumulator = await accumulatorPromise
-
-
-  // }, { error: 'No attempts made yet.' })
-
-  // type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithsystemInstruction>>
-
-  // const initialAccumulator = Promise.resolve<PipelineResult>({ error: 'No attempts made yet.' })
-
-  // const commentsByCogni = comments.map(comment => {
-  //   const attemtGenerationWithComment = attemptGenerationWithsystemInstruction(comment)
-  //   const generated = MODELS_FALLBACK_CHAIN.reduce(async (accumulatorPromise, model) => {
-  //     const resolvedAccumulator = await accumulatorPromise
-
-  //     if ('data' in resolvedAccumulator) {
-  //       return resolvedAccumulator
-  //     }
-
-  //     return attemtGenerationWithComment(model)
-  //   },)
-  // })
 }
+
+export const createComment = (userId: string) => async (data: CreateCommentInput) => prisma.comment.create({
+  data: { userId, ...data },
+  select: { article: { select: { id: true, content: true, createdAt: true, contentEngine: { select: { slug: true } } } } }
+})

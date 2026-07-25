@@ -3,6 +3,10 @@
     {
       "path": "/api/articles/generate",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/comments/generate",
+      "schedule": "0 0 * * *"
     }
   ]
 }

@@ -1,5 +1,4 @@
 import {
-  // Comment,
   Prisma
 } from "@/generated/prisma/client";
 import { prisma } from "./prisma";
@@ -10,18 +9,12 @@ import { fetchOrCreateCogni } from "./user";
 import { CreateCommentInput } from "../schemas/comment";
 
 export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.findMany({
-  where: { articleId },
+  where: { articleId, commentId: null },
   include: {
-    user: {
-      select: {
-        name: true,
-        image: true
-      }
-    }
+    user: { select: { name: true, image: true } },
+    comments: { include: { user: { select: { name: true, image: true } } }, orderBy: { createdAt: 'asc' } }
   },
-  orderBy: {
-    createdAt: 'desc',
-  },
+  orderBy: { createdAt: 'desc', },
 });
 
 export const fetchNewerCommentsByOtherUsers = (cogniUserId: string) => (date: Date) => prisma.comment.findMany({

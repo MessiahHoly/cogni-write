@@ -12,7 +12,6 @@ const handleCommentGeneration = async (request: Request) => {
   const authFailed = verifyRouteAuth(request)
   if (authFailed) return authFailed
 
-  //TODO: check if {data: {data|error}|error} should be returned. Same for article route. 
   //TODO: check if generate functions can be refactored
 
   const { data: cogni, error } = await fetchOrCreateCogni()

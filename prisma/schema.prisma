@@ -124,6 +124,12 @@ model Article {
   @@map("article") // Maps to a clean snake_case table in PostgreSQL
 }
 
+//TODO: update prisma
+// │  Update available 7.8.0 -> 7.9.0                        │
+// │  Run the following to update                            │
+// │    npm i --save-dev prisma@latest                       │
+// │    npm i @prisma/client@latest         
+
 model Comment {
   id        String   @id @default(cuid())
   content   String   @db.Text
@@ -135,6 +141,10 @@ model Comment {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+
+  commentId String?
+  comment   Comment?  @relation("CommentReplies", fields: [commentId], references: [id], onDelete: Cascade)
+  comments  Comment[] @relation("CommentReplies")
 
   @@index([articleId])
   @@index([userId])

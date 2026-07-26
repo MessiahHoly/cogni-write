@@ -1,22 +1,21 @@
 'use server'
 
-// import z, { success } from "zod"
 import { getSession } from "../auth/server"
 import { CreateCommentSchema } from "../schemas/comment"
-// import { prisma } from "../data/prisma"
 import { revalidatePath } from "next/cache"
 import { createComment } from "../data/comment"
 import { z } from 'zod'
 
-export const createCommentAction = async (articleId: string, initialState: unknown, formData: FormData) => {
-  // export const createComment = async (articleId: string, initialState: unknown, formData: FormData) => {
+export const createCommentAction = async (articleId: string, commentId: string | null, initialState: unknown, formData: FormData) => {
+  // export const createCommentAction = async (articleId: string, initialState: unknown, formData: FormData) => {
   const [session] = await Promise.all([getSession()])
 
   if (!session?.user.id) {
     return { success: false, error: "Unauthorised.  Please log in to comment." }
   }
 
-  const result = CreateCommentSchema.safeParse({ articleId, content: formData.get("content") })
+  const result = CreateCommentSchema.safeParse({ articleId, commentId, content: formData.get("content") })
+  // const result = CreateCommentSchema.safeParse({ articleId, content: formData.get("content") })
 
   if (!result.success) {
     return { error: z.prettifyError(result.error) }
@@ -25,11 +24,6 @@ export const createCommentAction = async (articleId: string, initialState: unkno
   const { data } = result
 
   try {
-    // const { article } = await prisma.comment.create({
-    //   data: { userId: session.user.id, ...data },
-    //   select: { article: { select: { contentEngine: { select: { slug: true } } } } }
-    // })
-    // revalidatePath(`${article.contentEngine.slug}/${data.articleId}`)
     const comment = await createComment(session.user.id)(data)
     revalidatePath(`${comment.article.contentEngine.slug}/${data.articleId}`)
 

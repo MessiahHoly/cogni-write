@@ -82,12 +82,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
           <MessageSquare className="w-5 h-5 text-primary" />
           Discussion ({comments.length})
         </h2>
-
         {session?.user.id ? (
           !session.user.name || session.user.name === session.user.email ? (
             <OnboardingNameField currentPath={currentPath} />
           ) : (
-            <CommentField articleId={articleId} />
+            <CommentField articleId={articleId} commentId={null} />
           )
         ) : (
           <div className="border border-dashed rounded-xl p-6 text-center bg-muted/5 space-y-10">

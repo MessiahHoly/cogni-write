@@ -3,13 +3,14 @@
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
 import { useActionState } from "react";
-// import { createComment } from "@/lib/actions/comment";
 import ButtonField from "@/app/admin/ui/button-field";
 import { createCommentAction } from "@/lib/actions/comment";
 
-export default function CommentField({ articleId }: { articleId: string }) {
-  const createCommentWithArticleId = createCommentAction.bind(null, articleId)
-  const [state, action, pending] = useActionState(createCommentWithArticleId, null)
+export default function CommentField({ articleId, commentId = null }: { articleId: string, commentId: string | null }) {
+  const createCommentWithArticleIdAAndCommentId = createCommentAction.bind(null, articleId, commentId)
+  const [state, action, pending] = useActionState(createCommentWithArticleIdAAndCommentId, null)
+
+  //TODO: remove You must sign in to share a comment. message on comment feild after signning in
 
   return (
     <div className="w-full">
@@ -31,7 +32,8 @@ export default function CommentField({ articleId }: { articleId: string }) {
               </Field>
             </FieldGroup>
           </FieldSet>
-          <ButtonField pending={pending} showCancel={false}>Save</ButtonField>
+          <ButtonField pending={pending} showCancel={false}>{commentId ? "Reply" : "Save"}</ButtonField>
+          {/* <ButtonField pending={pending} showCancel={false}>Save</ButtonField> */}
         </FieldGroup>
       </form>
     </div>

@@ -6,9 +6,12 @@ import { useActionState } from "react";
 import ButtonField from "@/app/admin/ui/button-field";
 import { createCommentAction } from "@/lib/actions/comment";
 
-export default function CommentField({ articleId, commentId = null }: { articleId: string, commentId: string | null }) {
-  const createCommentWithArticleIdAAndCommentId = createCommentAction.bind(null, articleId, commentId)
-  const [state, action, pending] = useActionState(createCommentWithArticleIdAAndCommentId, null)
+export default function CommentField({
+  articleId, commentId = null, placeholder = "Share your thoughts or ask a question about this article...", label = "Comment", onSuccess }: {
+    articleId: string, commentId: string | null, placeholder?: string, label?: string, onSuccess?: () => void
+  }) {
+  const createCommentWithArticleIdAndCommentId = createCommentAction.bind(null, articleId, commentId)
+  const [state, action, pending] = useActionState(createCommentWithArticleIdAndCommentId, null)
 
   //TODO: remove You must sign in to share a comment. message on comment feild after signning in
 
@@ -20,11 +23,11 @@ export default function CommentField({ articleId, commentId = null }: { articleI
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="content">
-                  Comment
+                  {label}
                 </FieldLabel>
                 <Textarea
                   id="content"
-                  placeholder="Share your thoughts or ask a question about this article..."
+                  placeholder={placeholder}
                   required
                   name="content"
                 />
@@ -33,7 +36,6 @@ export default function CommentField({ articleId, commentId = null }: { articleI
             </FieldGroup>
           </FieldSet>
           <ButtonField pending={pending} showCancel={false}>{commentId ? "Reply" : "Save"}</ButtonField>
-          {/* <ButtonField pending={pending} showCancel={false}>Save</ButtonField> */}
         </FieldGroup>
       </form>
     </div>

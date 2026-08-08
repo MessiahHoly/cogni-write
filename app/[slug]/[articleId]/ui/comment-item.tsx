@@ -1,25 +1,17 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Comment, Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { MessageSquare } from "lucide-react";
 import { useState } from "react";
 import CommentField from "./comment-field";
 
-//TODO: distructure comments
-
-export default function CommentItem({ comment,
-  // user,
-  isAuthenticated }: {
-    comment: Prisma.CommentGetPayload<{
-      // select: { user: { select: { name: true } } },
-      include: {
-        comments: { include: { user: { select: { name: true } } } }, user: { select: { name: true } }
-      }
-    }>,
-    // user: { name: string },
-    isAuthenticated: boolean
-  }) {
+export default function CommentItem({ comment, isAuthenticated }: {
+  comment: Prisma.CommentGetPayload<{
+    include: { comments: { include: { user: { select: { name: true } } } }, user: { select: { name: true } } }
+  }>,
+  isAuthenticated: boolean
+}) {
   const [isReplying, setIsReplying] = useState(false);
 
   return (
@@ -57,7 +49,7 @@ export default function CommentItem({ comment,
         <div className="ml-6 pl-4 border-l-2 border-muted space-y-2">
           <CommentField
             articleId={comment.articleId}
-            commentId={comment.commentId}
+            commentId={comment.id}
             placeholder={`Replying to ${comment.user.name}...`}
             label=""
             onSuccess={() => setIsReplying(false)}

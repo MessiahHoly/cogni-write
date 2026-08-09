@@ -19,7 +19,8 @@ export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.fi
 
 export const fetchNewerCommentsByOtherUsers = (cogniUserId: string) => (date: Date) => prisma.comment.findMany({
   where: { createdAt: { gte: date }, userId: { not: cogniUserId } },
-  select: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } }, content: true }
+  include: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } } }
+  // select: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } }, content: true }
 })
 
 const COGNI_SYSTEM_INSTRUCTION = `

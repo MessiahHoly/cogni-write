@@ -1,8 +1,6 @@
 import { verifyRouteAuth } from "@/lib/auth/server"
 import {
-  createComment,
-  fetchFirstComment, fetchLatestCommentByUserId, fetchNewerCommentsByOtherUsers,
-  generateComment
+  createComment, fetchFirstComment, fetchLatestCommentByUserId, fetchNewerCommentsByOtherUsers, generateComment
 } from "@/lib/data/comment"
 import { fetchOrCreateCogni } from "@/lib/data/user"
 import { revalidatePath } from "next/cache"
@@ -32,7 +30,8 @@ const handleCommentGeneration = async (request: Request) => {
       if ('error' in result) {
         return { error: result.error || 'Unknown error occurred.' }
       } else {
-        await createComment(cogni.id)({ articleId: comment.article.id, content: result.data.text })
+        await createComment(cogni.id)({ articleId: comment.article.id, content: result.data.text, commentId: comment.id })
+        // await createComment(cogni.id)({ articleId: comment.article.id, content: result.data.text })
         revalidatePath(`/${comment.article.contentEngine.slug}/${comment.article.id}`)
         return { data: result.data }
       }

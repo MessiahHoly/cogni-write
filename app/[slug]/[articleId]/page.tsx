@@ -10,6 +10,7 @@ import remarkGfm from "remark-gfm";
 import CommentField from "./ui/comment-field";
 import { SignInField } from "@/app/ui/sign-in-field";
 import OnboardingNameField from "./ui/onboarding-name-field";
+import CommentItem from "./ui/comment-item";
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string, articleId: string }> }) => {
   const { slug, articleId } = await params
@@ -44,6 +45,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
   const bodyMarkdown = textLines.slice(1).join("\n").trim() || "No content available."
 
   const currentPath = `/${slug}/${articleId}`
+  const isAuthenticated = Boolean(session?.user.id)
 
   return (
     <main className="max-w-3xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
@@ -103,20 +105,22 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
               No comments yet. Be the first to start the discussion!
             </p>
           ) : (
-            comments.map(({ id, user, createdAt, content }) => (
-              <div key={id} className="flex gap-4 items-start text-sm border-b pb-6 last:border-0 last:pb-0">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold">{user.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(createdAt).toLocaleString(undefined, {
-                        year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
-                      })}
-                    </span>
-                  </div>
-                  <p className="text-foreground/90 whitespace-pre-wrap">{content}</p>
-                </div>
-              </div>
+            comments.map(comment => (
+            // comments.map(({ id, user, createdAt, content }) => (
+              <CommentItem comment={comment} isAuthenticated={isAuthenticated} key={comment.id} />
+              // <div key={id} className="flex gap-4 items-start text-sm border-b pb-6 last:border-0 last:pb-0">
+              //   <div className="space-y-1">
+              //     <div className="flex items-center gap-2">
+              //       <span className="font-semibold">{user.name}</span>
+              //       <span className="text-xs text-muted-foreground">
+              //         {new Date(createdAt).toLocaleString(undefined, {
+              //           year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+              //         })}
+              //       </span>
+              //     </div>
+              //     <p className="text-foreground/90 whitespace-pre-wrap">{content}</p>
+              //   </div>
+              // </div>
             ))
           )}
         </div>

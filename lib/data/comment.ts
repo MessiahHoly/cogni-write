@@ -35,51 +35,11 @@ export const fetchCommentsWithRepliesByArticleId = async (articleId: string) => 
   }, new Map<string, typeof rawComments>())
 
   const buildNode = (comment: (typeof rawComments)[number]): CommentNode => {
-  // const buildNode = (comment: Prisma.CommentGetPayload<{ include: { user: { select: { name: true, image: true } } } }>): CommentNode => {
     const children = childrenMap.get(comment.id) ?? []
     return { ...comment, comments: children.map(buildNode) }
   }
 
   return rawComments.filter(comment => !comment.commentId).map(buildNode).reverse()
-
-  // const childrenByParentId = rawComments.reduce<Record<string, CommentNode[]>>((acc, comment) => {
-  //   if (!comment.commentId) return acc
-  //   const parentId = comment.commentId
-  //   return { ...acc, [parentId]: [...(acc[parentId] || []), { ...comment, comments: [] }] }
-  // }, {})
-
-  // const attachChildren = (node: CommentNode): CommentNode => {
-  //   const children = childrenByParentId[node.id] || []
-  //   return { ...node, comments: children.map(attachChildren) }
-  // }
-
-  // return rawComments.filter(comment => !comment.commentId).map(c => attachChildren({ ...c, comments: [] })).reverse()
-
-  // const nodeMap = [...rawComments].reverse().reduce<Map<string, CommentNode>>((map, comment) => {
-  //   const children = Array.from(map.values()).filter(node => node.commentId === comment.id)
-  //   const node = { ...comment, comments: children }
-  //   const updatedMap = new Map(Array.from(map.entries()).filter(([_, n]) => n.commentId !== comment.id))
-  //   return updatedMap.set(comment.id, node)
-  // }, new Map())
-
-  // return Array.from(nodeMap.values())
-
-  // const { rootComments } = rawComments.reduce<{ nodeMap: Map<string, CommentNode>, rootComments: CommentNode[] }>((acc, comment) => {
-  //   const node = { ...comment, comments: [] }
-
-  //   const updatedMap = new Map(acc.nodeMap).set(node.id, node)
-  //   const parentNode = node.commentId ? updatedMap.get(node.commentId) : null
-
-  //   if (parentNode) {
-  //     updatedMap.set(comment.commentId!, { ...parentNode, comments: [...parentNode.comments, node] })
-  //     return { nodeMap: updatedMap, rootComments: acc.rootComments }
-  //   }
-
-  //   return { nodeMap: updatedMap, rootComments: [...acc.rootComments, node] }
-
-  // }, { nodeMap: new Map(), rootComments: [] })
-
-  // return rootComments.reverse()
 };
 
 export const fetchNewerCommentsByOtherUsers = (cogniUserId: string) => (date: Date) => prisma.comment.findMany({

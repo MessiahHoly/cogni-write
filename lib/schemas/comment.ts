@@ -1,3 +1,4 @@
+import { Prisma } from "@/generated/prisma/browser";
 import { z } from "zod";
 
 export const CreateCommentSchema = z.object({
@@ -7,3 +8,7 @@ export const CreateCommentSchema = z.object({
 })
 
 export type CreateCommentInput = z.infer<typeof CreateCommentSchema>
+
+export type CommentNode = Prisma.CommentGetPayload<{
+  include: { user: { select: { name: true, image: true } } }
+}> & { comments: CommentNode[] }

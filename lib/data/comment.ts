@@ -6,7 +6,7 @@ import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai";
 import { ai } from "./ai";
 import { verifyRouteAuth } from "../auth/server";
 import { fetchOrCreateCogni } from "./user";
-import { CreateCommentInput } from "../schemas/comment";
+import { CommentNode, CreateCommentInput } from "../schemas/comment";
 
 export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.findMany({
   where: { articleId, commentId: null },
@@ -17,7 +17,7 @@ export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.fi
   orderBy: { createdAt: 'desc', },
 });
 
-type CommentNode = Prisma.CommentGetPayload<{ include: { user: { select: { name: true, image: true } } } }> & { comments: CommentNode[] }
+// type CommentNode = Prisma.CommentGetPayload<{ include: { user: { select: { name: true, image: true } } } }> & { comments: CommentNode[] }
 
 export const fetchCommentsWithRepliesByArticleId = async (articleId: string) => {
   const rawComments = await prisma.comment.findMany({
@@ -45,7 +45,6 @@ export const fetchCommentsWithRepliesByArticleId = async (articleId: string) => 
 export const fetchNewerCommentsByOtherUsers = (cogniUserId: string) => (date: Date) => prisma.comment.findMany({
   where: { createdAt: { gte: date }, userId: { not: cogniUserId } },
   include: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } } }
-  // select: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } }, content: true }
 })
 
 const COGNI_SYSTEM_INSTRUCTION = `

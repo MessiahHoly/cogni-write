@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth/server";
 import { fetchArticleBySlugAndId } from "@/lib/data/article";
-import { fetchCommentsByArticleId } from "@/lib/data/comment";
+import { fetchCommentsByArticleId, fetchCommentsWithRepliesByArticleId } from "@/lib/data/comment";
 import { ArrowLeft, Calendar, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -38,7 +38,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
     return notFound()
   }
 
-  const [comments, session] = await Promise.all([fetchCommentsByArticleId(articleId), getSession()])
+  const [comments, session] = await Promise.all([fetchCommentsWithRepliesByArticleId(articleId), getSession(),])
+  // const [comments, session] = await Promise.all([fetchCommentsByArticleId(articleId), getSession()])
+
+  // console.log(commentsWithReplies[0])
 
   const textLines = article.content.split("\n")
   const parsedTitle = textLines[0].replace(/^#\s*/, "") || "Untitled Article"
@@ -106,21 +109,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
             </p>
           ) : (
             comments.map(comment => (
-            // comments.map(({ id, user, createdAt, content }) => (
               <CommentItem comment={comment} isAuthenticated={isAuthenticated} key={comment.id} />
-              // <div key={id} className="flex gap-4 items-start text-sm border-b pb-6 last:border-0 last:pb-0">
-              //   <div className="space-y-1">
-              //     <div className="flex items-center gap-2">
-              //       <span className="font-semibold">{user.name}</span>
-              //       <span className="text-xs text-muted-foreground">
-              //         {new Date(createdAt).toLocaleString(undefined, {
-              //           year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
-              //         })}
-              //       </span>
-              //     </div>
-              //     <p className="text-foreground/90 whitespace-pre-wrap">{content}</p>
-              //   </div>
-              // </div>
             ))
           )}
         </div>

@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/comments/generate",
-      "schedule": "0 0 * * *"
+      "schedule": "15 0 * * *"
     }
   ]
 }

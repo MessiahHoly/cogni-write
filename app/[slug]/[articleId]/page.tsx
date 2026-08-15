@@ -38,11 +38,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
     return notFound()
   }
 
-  const [comments, session] = await Promise.all([fetchCommentsWithRepliesByArticleId(articleId), getSession(),])
-  // const [comments, session] = await Promise.all([fetchCommentsByArticleId(articleId), getSession()])
-
-  // console.log(commentsWithReplies[0])
-
+  const [comments, session] = await Promise.all([fetchCommentsWithRepliesByArticleId(articleId), getSession()])
   const textLines = article.content.split("\n")
   const parsedTitle = textLines[0].replace(/^#\s*/, "") || "Untitled Article"
   const bodyMarkdown = textLines.slice(1).join("\n").trim() || "No content available."
@@ -94,11 +90,12 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
             <CommentField articleId={articleId} commentId={null} />
           )
         ) : (
-          <div className="border border-dashed rounded-xl p-6 text-center bg-muted/5 space-y-10">
-            <p className="text-sm text-muted-foreground">
+          <div className="border border-dashed rounded-xl p-6 bg-muted/5 space-y-10">
+          {/* <div className="border border-dashed rounded-xl p-6 text-center bg-muted/5 space-y-10"> */}
+            {/* <p className="text-sm text-muted-foreground">
               You must sign in to share a comment.
-            </p>
-            <SignInField callbackURL={`${currentPath}`} hash="discussion" showCancel={false} />
+            </p> */}
+            <SignInField callbackURL={`${currentPath}`} hash="discussion" showCancel={false} text="You must sign in to share a comment." />
           </div>
         )}
 

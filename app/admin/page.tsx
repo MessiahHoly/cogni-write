@@ -13,9 +13,7 @@ import CreateEngineDialog from "./ui/content-engine-dialog";
 import ContentEngineDialog from "./ui/content-engine-dialog";
 
 export default async function Page() {
-  const [session,
-    contentEngines] = await Promise.all([getSession(),
-    fetchContentEngines()])
+  const [session, contentEngines] = await Promise.all([getSession(), fetchContentEngines()])
 
   if (!session) {
     return (

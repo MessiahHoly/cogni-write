@@ -9,7 +9,6 @@ import { useActionState } from "react";
 export default function OnboardingNameField({ currentPath }: { currentPath: string }) {
   const updateUserNameWithCurrentPath = updateUserName.bind(null, currentPath)
   const [state, action, pending] = useActionState(updateUserNameWithCurrentPath, null)
-  // const [state, action, pending] = useActionState(updateUserName, null)
 
   return (
     <div className="border border-primary/20 rounded-xl p-6 bg-primary/5 space-y-4">

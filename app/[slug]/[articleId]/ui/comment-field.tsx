@@ -13,8 +13,6 @@ export default function CommentField({
   const createCommentWithArticleIdAndCommentId = createCommentAction.bind(null, articleId, commentId)
   const [state, action, pending] = useActionState(createCommentWithArticleIdAndCommentId, null)
 
-  //TODO: remove You must sign in to share a comment. message on comment feild after signning in
-
   return (
     <div className="w-full">
       <form action={action}>

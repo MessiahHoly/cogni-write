@@ -11,8 +11,9 @@ import { authClient } from "@/lib/auth/auth-client"
 import { SubmitEvent, useState } from "react" // Fixed import
 import ButtonField from "../admin/ui/button-field"
 
-export function SignInField({ callbackURL, showCancel, hash }: { callbackURL: string, showCancel: boolean, hash?: string, }) {
-  // export function SignInField({ callbackURL, hash }: { callbackURL: string, hash?: string }) {
+export function SignInField({ callbackURL, showCancel, text, hash }: {
+  callbackURL: string, showCancel: boolean, text?: string, hash?: string,
+}) {
   const [email, setEmail] = useState("")
   const [magicLinkSent, setMagicLinkSent] = useState(false)
   const [signingIn, setSigningIn] = useState(false)
@@ -55,7 +56,12 @@ export function SignInField({ callbackURL, showCancel, hash }: { callbackURL: st
   }
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md mx-auto space-y-6">
+      {/* <div className="w-full max-w-md"> */}
+      <p className="text-sm text-muted-foreground">
+        {text || "Sign in to continue."}
+        {/* You must sign in to share a comment. */}
+      </p>
       <form onSubmit={handleSubmit}>
         <FieldGroup>
           <FieldSet>

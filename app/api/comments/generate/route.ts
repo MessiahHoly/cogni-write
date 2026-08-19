@@ -6,11 +6,8 @@ import { fetchOrCreateCogni } from "@/lib/data/user"
 import { revalidatePath } from "next/cache"
 import { NextResponse } from "next/server"
 
-//TODO: Cogni comment can be "While the author talks about...".  Cogni's comment should be as if Cogni itself is the author.
-
 const handleCommentGeneration = async (request: Request) => {
   const authFailed = verifyRouteAuth(request)
-  // console.log(authFailed)
   if (authFailed) return authFailed
 
   //TODO: check if generate functions can be refactored

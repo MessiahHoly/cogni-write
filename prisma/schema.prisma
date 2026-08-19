@@ -122,13 +122,9 @@ model Article {
   comments        Comment[]
 
   @@map("article") // Maps to a clean snake_case table in PostgreSQL
-}
+}  
 
-//TODO: update prisma
-// │  Update available 7.8.0 -> 7.9.0                        │
-// │  Run the following to update                            │
-// │    npm i --save-dev prisma@latest                       │
-// │    npm i @prisma/client@latest         
+//TODO: npm audit fix
 
 model Comment {
   id        String   @id @default(cuid())

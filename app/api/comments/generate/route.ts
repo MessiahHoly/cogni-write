@@ -10,8 +10,6 @@ const handleCommentGeneration = async (request: Request) => {
   const authFailed = verifyRouteAuth(request)
   if (authFailed) return authFailed
 
-  //TODO: check if generate functions can be refactored
-
   const { data: cogni, error } = await fetchOrCreateCogni()
   if (!cogni) return NextResponse.json({ error }, { status: 400 })
 
@@ -31,7 +29,6 @@ const handleCommentGeneration = async (request: Request) => {
         return { error: result.error || 'Unknown error occurred.' }
       } else {
         await createComment(cogni.id)({ articleId: comment.article.id, content: result.data.text, commentId: comment.id })
-        // await createComment(cogni.id)({ articleId: comment.article.id, content: result.data.text })
         revalidatePath(`/${comment.article.contentEngine.slug}/${comment.article.id}`)
         return { data: result.data }
       }

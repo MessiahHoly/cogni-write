@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { CreateArticleSchema } from "../schemas/article"
 import { prisma } from "./prisma"
-import { GoogleGenAI } from "@google/genai"
+// import { GoogleGenAI } from "@google/genai"
 import { ContentEngine } from "@/generated/prisma/browser"
 import { cache } from "react"
 import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai"

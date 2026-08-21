@@ -124,8 +124,6 @@ model Article {
   @@map("article") // Maps to a clean snake_case table in PostgreSQL
 }  
 
-//TODO: npm audit fix
-
 model Comment {
   id        String   @id @default(cuid())
   content   String   @db.Text

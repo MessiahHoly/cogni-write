@@ -6,3 +6,5 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const toSlug = (text: string) => text.toLowerCase().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").trim()
+
+export const formatQuery = (query: string) => query.trim().split(/\s+/).filter(Boolean).join(' & ')

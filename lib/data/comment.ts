@@ -4,9 +4,8 @@ import {
 import { prisma } from "./prisma";
 import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai";
 import { ai } from "./ai";
-// import { verifyRouteAuth } from "../auth/server";
-// import { fetchOrCreateCogni } from "./user";
 import { CommentNode, CreateCommentInput } from "../schemas/comment";
+import { formatQuery } from "../utils";
 
 export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.findMany({
   where: { articleId, commentId: null },
@@ -129,45 +128,17 @@ export const generateComment = async (comment: Prisma.CommentGetPayload<{
   return { data: finalPipelineResult.data }
 }
 
-// const generateComments = async (request: Request) => {
-//   const authFailed = verifyRouteAuth(request)
-//   if (authFailed) return authFailed
-
-//   const { data, error } = await fetchOrCreateCogni()
-//   if (!data) return { error }
-
-//   const [latestCommentByCogni, firstComment] = await Promise.all([fetchLatestCommentByUserId(data.id), fetchFirstComment()])
-
-//   const date = latestCommentByCogni ? latestCommentByCogni.createdAt : firstComment?.createdAt
-
-//   if (!date) return { error: "No existing comment." }
-
-//   const comments = await fetchNewerCommentsByOtherUsers(data.id)(date)
-//   const attemptGenerationWithsystemInstruction = attemptGeneration(COGNI_SYSTEM_INSTRUCTION)
-
-//   const commentsByCogni = comments.map(async comment => {
-//     const attemptGenerationWithComment = attemptGenerationWithsystemInstruction(comment)
-
-//     type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithComment>>
-//     const initialAccumulator = Promise.resolve<PipelineResult>({ error: 'No attempts made yet.' })
-
-//     const commentsByCogni = await MODELS_FALLBACK_CHAIN.reduce(async (accumulatorPromise, model) => {
-//       const resolvedAccumulator = await accumulatorPromise
-
-//       if ('data' in resolvedAccumulator) {
-//         return resolvedAccumulator
-//       }
-
-//       return attemptGenerationWithComment(model)
-//     }, initialAccumulator)
-
-//     return commentsByCogni
-//   })
-
-//   return commentsByCogni
-// }
-
 export const createComment = (userId: string) => async (data: CreateCommentInput) => prisma.comment.create({
   data: { userId, ...data },
   select: { article: { select: { id: true, content: true, createdAt: true, contentEngine: { select: { slug: true } } } } }
 })
+
+const searchComments = async (query: string) => {
+  const formattedQuery = formatQuery(query)
+
+  return await prisma.comment.findMany({
+    where: { content: { search: formattedQuery } },
+    orderBy: { _relevance: { fields: ['content'], search: formattedQuery, sort: 'desc' } },
+    include: { user: { select: { name: true, image: true } } }
+  })
+}

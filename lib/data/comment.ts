@@ -133,12 +133,10 @@ export const createComment = (userId: string) => async (data: CreateCommentInput
   select: { article: { select: { id: true, content: true, createdAt: true, contentEngine: { select: { slug: true } } } } }
 })
 
-const searchComments = async (query: string) => {
-  const formattedQuery = formatQuery(query)
-
+export const searchComments = async (formattedQuery: string) => {
   return await prisma.comment.findMany({
     where: { content: { search: formattedQuery } },
     orderBy: { _relevance: { fields: ['content'], search: formattedQuery, sort: 'desc' } },
-    include: { user: { select: { name: true, image: true } } }
+    include: { user: { select: { name: true } } }
   })
 }

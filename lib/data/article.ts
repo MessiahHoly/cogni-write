@@ -128,11 +128,7 @@ export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(a
 })()
 
 
-const searchArticles = async (query: string) => {
-  const formattedQuery = formatQuery(query)
-
-  if (!formattedQuery) return []
-
+export const searchArticles = async (formattedQuery: string) => {
   return await prisma.article.findMany({
     where: { OR: [{ topic: { search: formattedQuery } }, { content: { search: formattedQuery } }] },
     orderBy: { _relevance: { fields: ['topic', 'content'], search: formattedQuery, sort: 'desc' } },

@@ -1,11 +1,11 @@
 import { z } from "zod"
 import { CreateArticleSchema } from "../schemas/article"
 import { prisma } from "./prisma"
-// import { GoogleGenAI } from "@google/genai"
 import { ContentEngine } from "@/generated/prisma/browser"
 import { cache } from "react"
 import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai"
 import { ai } from "./ai"
+import { formatQuery } from "../utils"
 
 const fetchArticleByContentEngineId = (contentEngineId: string) => {
   return prisma.article.findMany({
@@ -126,3 +126,16 @@ export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(a
     include: { contentEngine: true }
   })
 })()
+
+
+const searchArticles = async (query: string) => {
+  const formattedQuery = formatQuery(query)
+
+  if (!formattedQuery) return []
+
+  return await prisma.article.findMany({
+    where: { OR: [{ topic: { search: formattedQuery } }, { content: { search: formattedQuery } }] },
+    orderBy: { _relevance: { fields: ['topic', 'content'], search: formattedQuery, sort: 'desc' } },
+    include: { contentEngine: { select: { slug: true } } },
+  })
+}

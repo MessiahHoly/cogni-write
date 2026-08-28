@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { fetchContentEnginesWithLatestArticleAndCount } from "@/lib/data/content-engine";
 import { BookOpen, Calendar, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import SearchBar from "./ui/search-bar";
 
 export default async function Home() {
   const contentEngines = await fetchContentEnginesWithLatestArticleAndCount();
@@ -9,13 +10,20 @@ export default async function Home() {
   return (
     <main className="max-w-5xl mx-auto p-6 md:p-10 space-y-12 min-h-screen">
       {/* Hero Banner Area */}
-      <div className="text-center py-12 space-y-4 border-b">
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-          Cogni Write
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-left">
-          Explore automated, deep-dive articles curated across specialized niche topics.
-        </p>
+      <div className="text-center py-12 space-y-6 border-b">
+        <div className="space-y-6">
+          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+            Cogni Write
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-left">
+            Explore automated, deep-dive articles curated across specialized niche topics.
+          </p>
+        </div>
+      </div>
+
+      {/* Embedded Search Input */}
+      <div className="max-w-xl mx-auto pt-2">
+        <SearchBar />
       </div>
 
       {/* Grid Directory of Channels */}

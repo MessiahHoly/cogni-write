@@ -6,7 +6,8 @@ import Link from "next/link";
 
 export default function CommentCard({ comment }: {
   comment: Prisma.CommentGetPayload<{
-    include: { article: { include: { contentEngine: true } }, user: { select: { name: true } } }
+    include: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } } }
+    // include: { article: { include: { contentEngine: true } }, user: { select: { name: true } } }
   }>
 }) {
   const { article, id, user, createdAt, content } = comment

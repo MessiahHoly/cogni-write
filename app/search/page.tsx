@@ -4,6 +4,7 @@ import Link from "next/link";
 import SearchBar from "../ui/search-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ArticleCard from "./ui/article-card";
+import CommentCard from "./ui/comment-card";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -69,7 +70,40 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
               </div>
             )}
 
-            {comments.length > 0 && ()}
+            {comments.length > 0 && (
+              <div className="space-y-4">
+                <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                  Comments ({comments.length})
+                </h2>
+                <div className="grid gap-4">
+                  {comments.map((comment) => (
+                    <CommentCard key={comment.id} comment={comment} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </TabsContent>
+
+          {/* ARTICLES TAB */}
+          <TabsContent value="articles" className="space-y-4 mt-6">
+            {articles.length > 0 ? (
+              articles.map((article) => (
+                <ArticleCard key={article.id} article={article} />
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground italic py-6">No matching articles found.</p>
+            )}
+          </TabsContent>
+
+          {/* COMMENTS TAB */}
+          <TabsContent value="comments" className="space-y-4 mt-6">
+            {comments.length > 0 ? (
+              comments.map((comment) => (
+                <CommentCard key={comment.id} comment={comment} />
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground italic py-6">No matching comments found.</p>
+            )}
           </TabsContent>
         </Tabs>
       )}

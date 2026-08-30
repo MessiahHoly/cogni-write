@@ -137,6 +137,6 @@ export const searchComments = async (formattedQuery: string) => {
   return await prisma.comment.findMany({
     where: { content: { search: formattedQuery } },
     orderBy: { _relevance: { fields: ['content'], search: formattedQuery, sort: 'desc' } },
-    include: { user: { select: { name: true } } }
+    include: { user: { select: { name: true } }, article: { include: { contentEngine: { select: { slug: true } } } } }
   })
 }

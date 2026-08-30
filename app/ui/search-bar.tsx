@@ -20,7 +20,8 @@ export default function SearchBar() {
     }
 
     startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`);
+      // router.push(`${pathname}?${params.toString()}`);
+      router.replace(`/search?${params.toString()}`);
     });
   }
 

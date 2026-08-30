@@ -2,7 +2,7 @@ import { formatQuery } from "../utils"
 import { searchArticles } from "./article"
 import { searchComments } from "./comment"
 
-const searchAll = async (query: string) => {
+export const searchAll = async (query: string) => {
   const formattedQuery = formatQuery(query)
 
   if (!formattedQuery) return { articles: [], comments: [] }

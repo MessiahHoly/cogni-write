@@ -5,6 +5,7 @@ import SearchBar from "../ui/search-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ArticleCard from "./ui/article-card";
 import CommentCard from "./ui/comment-card";
+import { Suspense } from "react";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -26,7 +27,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
         <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Search</h1>
 
         {/* Global Search Input */}
-        <SearchBar />
+        <div className="max-w-xl mx-auto pt-2">
+          <Suspense fallback={<div className="h-10 w-full bg-muted/20 animate-pulse rounded-md" />}>
+            <SearchBar />
+          </Suspense>
+        </div>
 
         {query && (
           <p className="text-sm text-muted-foreground">

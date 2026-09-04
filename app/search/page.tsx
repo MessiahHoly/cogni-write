@@ -27,11 +27,11 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
         <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Search</h1>
 
         {/* Global Search Input */}
-        <div className="max-w-xl mx-auto pt-2">
-          <Suspense fallback={<div className="h-10 w-full bg-muted/20 animate-pulse rounded-md" />}>
-            <SearchBar />
-          </Suspense>
-        </div>
+        {/* <div className="max-w-xl mx-auto pt-2">
+          <Suspense fallback={<div className="h-10 w-full bg-muted/20 animate-pulse rounded-md" />}> */}
+        <SearchBar />
+        {/* </Suspense>
+        </div> */}
 
         {query && (
           <p className="text-sm text-muted-foreground">

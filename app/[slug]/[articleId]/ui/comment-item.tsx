@@ -5,6 +5,7 @@ import { MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import CommentField from "./comment-field";
 import { CommentNode } from "@/lib/schemas/comment";
+import { useSearchParams } from "next/navigation";
 
 const highlightText = (text: string, query?: string) => {
   if (!query || !query.trim()) return text;
@@ -15,19 +16,23 @@ const highlightText = (text: string, query?: string) => {
   const parts = text.split(regex);
 
   return parts.map((part, index) =>
-    regex.test(part) ? (
+    part.toLowerCase() === query.toLocaleLowerCase() ? (
       <mark key={index}
         className="bg-yellow-200 text-black dark:bg-yellow-500/30 dark:text-yellow-200 rounded-sm px-0.5 font-medium">
         {part}
       </mark>
     ) : (
-      part)
+      part
+    )
   );
 }
 
 export default function CommentItem({ comment, isAuthenticated }: { comment: CommentNode, isAuthenticated: boolean }) {
   const [isReplying, setIsReplying] = useState(false);
   const [isTargeted, setIsTargeted] = useState(false);
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get('q') ?? "";
 
   useEffect(() => {
     const checkHash = () => {
@@ -50,7 +55,7 @@ export default function CommentItem({ comment, isAuthenticated }: { comment: Com
   return (
     <div
       className={`space-y-4 border-b pb-6 last:border-0 last:pb-0 scroll-mt-20 transition-all rounded-lg
-         ${isTargeted ? 'bg-accent p-3 ring-2 ringbg-primary/50' : 'target:bg-accent target:p-3'}`}
+         ${isTargeted ? 'bg-accent p-3 ring-2 ring-primary/50' : 'target:bg-accent target:p-3'}`}
       id={comment.id}>
 
       {/* Top Level Comment */}
@@ -68,7 +73,10 @@ export default function CommentItem({ comment, isAuthenticated }: { comment: Com
           </span>
         </div>
 
-        <p className="text-foreground/90 text-sm whitespace-pre-wrap">{comment.content}</p>
+        <p className="text-foreground/90 text-sm whitespace-pre-wrap">
+          {/* {comment.content} */}
+          {highlightText(comment.content, query)}
+        </p>
 
         {isAuthenticated && (
           <Button

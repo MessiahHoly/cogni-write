@@ -1,11 +1,29 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-// import { Prisma } from "@/generated/prisma/client";
 import { MessageSquare } from "lucide-react";
 import { useEffect, useState } from "react";
 import CommentField from "./comment-field";
 import { CommentNode } from "@/lib/schemas/comment";
+
+const highlightText = (text: string, query?: string) => {
+  if (!query || !query.trim()) return text;
+
+  // Escape special regex characters in user search query
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const regex = new RegExp(`(${escapedQuery})`, 'gi');
+  const parts = text.split(regex);
+
+  return parts.map((part, index) =>
+    regex.test(part) ? (
+      <mark key={index}
+        className="bg-yellow-200 text-black dark:bg-yellow-500/30 dark:text-yellow-200 rounded-sm px-0.5 font-medium">
+        {part}
+      </mark>
+    ) : (
+      part)
+  );
+}
 
 export default function CommentItem({ comment, isAuthenticated }: { comment: CommentNode, isAuthenticated: boolean }) {
   const [isReplying, setIsReplying] = useState(false);
@@ -33,10 +51,8 @@ export default function CommentItem({ comment, isAuthenticated }: { comment: Com
     <div
       className={`space-y-4 border-b pb-6 last:border-0 last:pb-0 scroll-mt-20 transition-all rounded-lg
          ${isTargeted ? 'bg-accent p-3 ring-2 ringbg-primary/50' : 'target:bg-accent target:p-3'}`}
-      // className="space-y-4 border-b pb-6 last:border-0 last:pb-0 scroll-mt-20 transition-colors duration-500 target:bg-accent target:p-3 target:rounded-lg"
-      // className="space-y-4 border-b pb-6 last:border-0 last:pb-0 scroll-mt-20 transition-colors duration-500 target:bg-primary/10 target:p-3 target:rounded-lg"
       id={comment.id}>
-        
+
       {/* Top Level Comment */}
       <div className="space-y-1">
         <div className="flex items-center gap-2">

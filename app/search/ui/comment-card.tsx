@@ -7,13 +7,13 @@ import Link from "next/link";
 export default function CommentCard({ comment }: {
   comment: Prisma.CommentGetPayload<{
     include: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } } }
-    // include: { article: { include: { contentEngine: true } }, user: { select: { name: true } } }
   }>
 }) {
   const { article, id, user, createdAt, content } = comment
   // Direct link to article page where comment was posted
-  //TODO: implemenet hash link to comment in article page
-  const targetUrl = `/${article.contentEngine.slug}/${article.id}#comment-${id}`
+  const targetUrl = `/${article.contentEngine.slug}/${article.id}#${id}`
+  // const targetUrl = `/${article.contentEngine.slug}/${article.id}#comment-${id}`
+
   return (
     <Card className="bg-muted/20 border-dashed shadow-none">
       <CardHeader className="p-5 pb-2 space-y-2">

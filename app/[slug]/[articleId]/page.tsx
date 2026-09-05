@@ -91,10 +91,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
           )
         ) : (
           <div className="border border-dashed rounded-xl p-6 bg-muted/5 space-y-10">
-          {/* <div className="border border-dashed rounded-xl p-6 text-center bg-muted/5 space-y-10"> */}
-            {/* <p className="text-sm text-muted-foreground">
-              You must sign in to share a comment.
-            </p> */}
             <SignInField callbackURL={`${currentPath}`} hash="discussion" showCancel={false} text="You must sign in to share a comment." />
           </div>
         )}

@@ -5,7 +5,7 @@ import SearchBar from "../ui/search-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ArticleCard from "./ui/article-card";
 import CommentCard from "./ui/comment-card";
-import { Suspense } from "react";
+// import { Suspense } from "react";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -27,11 +27,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
         <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">Search</h1>
 
         {/* Global Search Input */}
-        {/* <div className="max-w-xl mx-auto pt-2">
-          <Suspense fallback={<div className="h-10 w-full bg-muted/20 animate-pulse rounded-md" />}> */}
         <SearchBar />
-        {/* </Suspense>
-        </div> */}
 
         {query && (
           <p className="text-sm text-muted-foreground">
@@ -82,7 +78,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
                 </h2>
                 <div className="grid gap-4">
                   {comments.map((comment) => (
-                    <CommentCard key={comment.id} comment={comment} />
+                    <CommentCard key={comment.id} comment={comment} query={query} />
                   ))}
                 </div>
               </div>
@@ -104,7 +100,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
           <TabsContent value="comments" className="space-y-4 mt-6">
             {comments.length > 0 ? (
               comments.map((comment) => (
-                <CommentCard key={comment.id} comment={comment} />
+                <CommentCard key={comment.id} comment={comment} query={query} />
               ))
             ) : (
               <p className="text-sm text-muted-foreground italic py-6">No matching comments found.</p>

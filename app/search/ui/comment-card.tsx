@@ -4,15 +4,20 @@ import { Prisma } from "@/generated/prisma/client";
 import { MessageSquare } from "lucide-react";
 import Link from "next/link";
 
-export default function CommentCard({ comment }: {
+export default function CommentCard({ comment, query }: {
   comment: Prisma.CommentGetPayload<{
     include: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } } }
-  }>
+  }>,
+  query: string
 }) {
+  // export default function CommentCard({ comment }: {
+  //   comment: Prisma.CommentGetPayload<{
+  //     include: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } } }
+  //   }>
+  // }) {
   const { article, id, user, createdAt, content } = comment
   // Direct link to article page where comment was posted
-  const targetUrl = `/${article.contentEngine.slug}/${article.id}#${id}`
-  // const targetUrl = `/${article.contentEngine.slug}/${article.id}#comment-${id}`
+  const targetUrl = `/${article.contentEngine.slug}/${article.id}?q=${encodeURIComponent(query)}#${id}`
 
   return (
     <Card className="bg-muted/20 border-dashed shadow-none">

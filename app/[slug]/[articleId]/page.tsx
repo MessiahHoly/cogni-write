@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth/server";
 import { fetchArticleBySlugAndId } from "@/lib/data/article";
-import { fetchCommentsByArticleId, fetchCommentsWithRepliesByArticleId } from "@/lib/data/comment";
+import {
+  // fetchCommentsByArticleId,
+  fetchCommentsWithRepliesByArticleId
+} from "@/lib/data/comment";
 import { ArrowLeft, Calendar, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -11,6 +14,9 @@ import CommentField from "./ui/comment-field";
 import { SignInField } from "@/app/ui/sign-in-field";
 import OnboardingNameField from "./ui/onboarding-name-field";
 import CommentItem from "./ui/comment-item";
+import ArticleBody from "./ui/article-body";
+
+//TODO: update next.js
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string, articleId: string }> }) => {
   const { slug, articleId } = await params
@@ -70,9 +76,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
         <hr className="my-4" />
 
         <div className="prose prose-stone dark:prose-invert max-w-none leading-relaxed text-foreground/90">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {bodyMarkdown}
-          </ReactMarkdown>
+          </ReactMarkdown> */}
+          <ArticleBody bodyMarkdown={bodyMarkdown} />
         </div>
       </article>
 

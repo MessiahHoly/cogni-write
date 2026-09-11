@@ -1,15 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth/server";
 import { fetchArticleBySlugAndId } from "@/lib/data/article";
-import {
-  // fetchCommentsByArticleId,
-  fetchCommentsWithRepliesByArticleId
-} from "@/lib/data/comment";
+import { fetchCommentsWithRepliesByArticleId } from "@/lib/data/comment";
 import { ArrowLeft, Calendar, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+// import ReactMarkdown from "react-markdown";
+// import remarkGfm from "remark-gfm";
 import CommentField from "./ui/comment-field";
 import { SignInField } from "@/app/ui/sign-in-field";
 import OnboardingNameField from "./ui/onboarding-name-field";

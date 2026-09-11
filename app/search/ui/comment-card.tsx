@@ -10,11 +10,6 @@ export default function CommentCard({ comment, query }: {
   }>,
   query: string
 }) {
-  // export default function CommentCard({ comment }: {
-  //   comment: Prisma.CommentGetPayload<{
-  //     include: { article: { include: { contentEngine: { select: { slug: true } } } }, user: { select: { name: true } } }
-  //   }>
-  // }) {
   const { article, id, user, createdAt, content } = comment
   // Direct link to article page where comment was posted
   const targetUrl = `/${article.contentEngine.slug}/${article.id}?q=${encodeURIComponent(query)}#${id}`

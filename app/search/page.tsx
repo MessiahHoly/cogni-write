@@ -5,7 +5,6 @@ import SearchBar from "../ui/search-bar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ArticleCard from "./ui/article-card";
 import CommentCard from "./ui/comment-card";
-// import { Suspense } from "react";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams;
@@ -65,7 +64,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
                 </h2>
                 <div className="grid gap-4">
                   {articles.map((article) => (
-                    <ArticleCard key={article.id} article={article} />
+                    <ArticleCard key={article.id} article={article} query={query} />
                   ))}
                 </div>
               </div>
@@ -89,7 +88,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
           <TabsContent value="articles" className="space-y-4 mt-6">
             {articles.length > 0 ? (
               articles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
+                <ArticleCard key={article.id} article={article} query={query} />
               ))
             ) : (
               <p className="text-sm text-muted-foreground italic py-6">No matching articles found.</p>

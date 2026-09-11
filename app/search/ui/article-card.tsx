@@ -4,13 +4,20 @@ import { Prisma } from "@/generated/prisma/client"
 import { Calendar, FileText } from "lucide-react"
 import Link from "next/link"
 
-export default function ArticleCard({ article }: {
+export default function ArticleCard({ article, query }: {
   article: Prisma.ArticleGetPayload<{
     include: { contentEngine: { select: { slug: true } } }
-  }>
+  }>,
+  query: string
 }) {
+  // export default function ArticleCard({ article }: {
+  //   article: Prisma.ArticleGetPayload<{
+  //     include: { contentEngine: { select: { slug: true } } }
+  //   }>
+  // }) {
   const { contentEngine, createdAt, topic, content, id } = article
-  const articleUrl = `${contentEngine.slug}/${id}`
+  const articleUrl = `${contentEngine.slug}/${id}?q=${encodeURIComponent(query)}`
+  // const articleUrl = `${contentEngine.slug}/${id}`
 
   return (
     <Card className="hover:border-primary/40 transition-all shadow-none hover:shadow-sm">

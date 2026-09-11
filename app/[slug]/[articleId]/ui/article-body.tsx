@@ -6,11 +6,6 @@ import { Children, cloneElement, isValidElement, ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-// const hasChildren = (props: unknown): props is { children: ReactNode } => {
-//   return typeof props === "object" && props !== null && "children" in props
-//     && (props as { children: Record<string, unknown> }).children !== undefined;
-// }
-
 const highlightChildren = (node: ReactNode, query: string): ReactNode => {
   if (typeof node === "string") {
     return highlightText(node, query)

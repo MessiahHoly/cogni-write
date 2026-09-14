@@ -12,7 +12,8 @@ export default async function Home() {
   const contentEngines = await fetchContentEnginesWithLatestArticleAndCount();
 
   return (
-    <main className="max-w-5xl mx-auto p-6 md:p-10 space-y-12 min-h-screen">
+    <main className="max-w-4xl mx-auto p-6 md:p-10 space-y-12 min-h-screen">
+    {/* <main className="max-w-5xl mx-auto p-6 md:p-10 space-y-12 min-h-screen"> */}
       {/* Hero Banner Area */}
       <div className="text-center py-12 space-y-6 border-b">
         <div className="space-y-6">
@@ -26,9 +27,9 @@ export default async function Home() {
       </div>
 
       {/* Embedded Search Input */}
-      <div className="max-w-xl mx-auto pt-2">
+      {/* <div className="max-w-xl mx-auto pt-2"> */}
         <SearchBar />
-      </div>
+      {/* </div> */}
 
       {/* Grid Directory of Channels */}
       <div className="space-y-6">

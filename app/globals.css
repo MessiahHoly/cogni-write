@@ -127,6 +127,8 @@
   }
   html {
     @apply font-sans scroll-smooth;
+    /* scrollbar-gutter: stable; */
+    /* overflow-y: scroll; */
   }
 
   @media (prefers-reduced-motion: reduce) {

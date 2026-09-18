@@ -17,7 +17,8 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
   const totalResults = articles.length + comments.length;
 
   return (
-    <main className="max-w-4xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
+    <main className="w-full max-w-4xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
+    {/* <main className="max-w-4xl mx-auto p-6 md:p-10 space-y-8 min-h-screen md:min-w-4xl"> */}
       {/* Top Header & Navigation */}
       <div className="space-y-4">
         <Link href="/"
@@ -41,13 +42,13 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
 
       {/* Results Display */}
       {!query ? (
-        <div className="border border-dashed rounded-xl p-12 text-center bg-muted/10 space-y-2">
+        <div className="w-full border border-dashed rounded-xl p-12 text-center bg-muted/10 space-y-2">
           <p className="text-muted-foreground font-medium">Type a search query above to get started.</p>
           <p className="text-xs text-muted-foreground">You can search across all article topics, full content, and reader comments.</p>
 
         </div>
       ) : totalResults === 0 ? (
-        <div className="border border-dashed rounded-xl p-12 text-center bg-muted/10">
+        <div className="w-full border border-dashed rounded-xl p-12 text-center bg-muted/10">
           <p className="text-muted-foreground font-medium">No results found for "{query}".</p>
           <p className="text-xs text-muted-foreground mt-1">Try checking for typos or searching with different keywords.</p>
         </div>

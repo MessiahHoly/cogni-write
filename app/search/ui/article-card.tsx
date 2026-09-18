@@ -10,14 +10,8 @@ export default function ArticleCard({ article, query }: {
   }>,
   query: string
 }) {
-  // export default function ArticleCard({ article }: {
-  //   article: Prisma.ArticleGetPayload<{
-  //     include: { contentEngine: { select: { slug: true } } }
-  //   }>
-  // }) {
   const { contentEngine, createdAt, topic, content, id } = article
   const articleUrl = `${contentEngine.slug}/${id}?q=${encodeURIComponent(query)}`
-  // const articleUrl = `${contentEngine.slug}/${id}`
 
   return (
     <Card className="hover:border-primary/40 transition-all shadow-none hover:shadow-sm">

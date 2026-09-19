@@ -18,7 +18,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ q
 
   return (
     <main className="w-full max-w-4xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
-    {/* <main className="max-w-4xl mx-auto p-6 md:p-10 space-y-8 min-h-screen md:min-w-4xl"> */}
       {/* Top Header & Navigation */}
       <div className="space-y-4">
         <Link href="/"

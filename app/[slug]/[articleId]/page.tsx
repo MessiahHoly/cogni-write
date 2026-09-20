@@ -17,8 +17,6 @@ import ArticleBody from "./ui/article-body";
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
 export const instant = false;
 
-//TODO: update next.js
-
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string, articleId: string }> }) => {
   const { slug, articleId } = await params
   const article = await fetchArticleBySlugAndId(slug)(articleId)

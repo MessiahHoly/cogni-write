@@ -52,13 +52,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
 
   return (
     <main className="max-w-3xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
-      <BackButton fallbackHref={`/${slug}`} fallbackLabel={`Back to ${article.contentEngine.topic}`} />
-      {/* <Button asChild variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground">
-        <Link href={`/${slug}`}>
-          <ArrowLeft className="w-4 h-4" />
-          Back to {article.contentEngine.topic}
-        </Link>
-      </Button> */}
+      <BackButton fallbackHref={`/${slug}`} fallbackLabel="Back" />
+      {/* <BackButton fallbackHref={`/${slug}`} fallbackLabel={`Back to ${article.contentEngine.topic}`} /> */}
 
       <article className="space-y-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

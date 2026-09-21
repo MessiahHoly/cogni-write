@@ -3,11 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Loader2, Search } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  Suspense,
-  // useEffect, useRef, useState,
-  useTransition
-} from "react";
+import { Suspense, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 const SearchBarContent = () => {
@@ -15,9 +11,6 @@ const SearchBarContent = () => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
-  // const queryParam = searchParams.get("q") ?? "";
-  // const [text, setText] = useState(queryParam);
-  // const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSearch = useDebouncedCallback((term: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -27,12 +20,9 @@ const SearchBarContent = () => {
       params.delete("q");
     }
 
-    // const targetPath = pathname === "/search" ? pathname : "/search";
-
     startTransition(() => {
       // Replaces parameters on current path smoothly without unmounting SearchBar
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-      // router.replace(`${targetPath}?${params.toString()}`, { scroll: false });
     });
   }, 300);
 

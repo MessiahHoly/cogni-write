@@ -10,6 +10,7 @@ import { SignInField } from "@/app/ui/sign-in-field";
 import OnboardingNameField from "./ui/onboarding-name-field";
 import CommentItem from "./ui/comment-item";
 import ArticleBody from "./ui/article-body";
+import BackButton from "./ui/back-button";
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
@@ -51,13 +52,13 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
 
   return (
     <main className="max-w-3xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
-    {/* <main className="max-w-3xl mx-auto p-6 md:p-10 space-y-8 min-h-screen"> */}
-      <Button asChild variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground">
+      <BackButton fallbackHref={`/${slug}`} fallbackLabel={`Back to ${article.contentEngine.topic}`} />
+      {/* <Button asChild variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground">
         <Link href={`/${slug}`}>
           <ArrowLeft className="w-4 h-4" />
           Back to {article.contentEngine.topic}
         </Link>
-      </Button>
+      </Button> */}
 
       <article className="space-y-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -18,7 +18,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   }
 
   return (
-    <main className="max-w-5xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
+    <main className="max-w-4xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
+    {/* <main className="max-w-5xl mx-auto p-6 md:p-10 space-y-8 min-h-screen"> */}
       <div className="space-y-4">
         <Button asChild variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground">
           <Link href="/">

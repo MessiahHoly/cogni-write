@@ -5,8 +5,6 @@ import { fetchCommentsWithRepliesByArticleId } from "@/lib/data/comment";
 import { ArrowLeft, Calendar, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-// import ReactMarkdown from "react-markdown";
-// import remarkGfm from "remark-gfm";
 import CommentField from "./ui/comment-field";
 import { SignInField } from "@/app/ui/sign-in-field";
 import OnboardingNameField from "./ui/onboarding-name-field";
@@ -53,6 +51,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
 
   return (
     <main className="max-w-3xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
+    {/* <main className="max-w-3xl mx-auto p-6 md:p-10 space-y-8 min-h-screen"> */}
       <Button asChild variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground">
         <Link href={`/${slug}`}>
           <ArrowLeft className="w-4 h-4" />

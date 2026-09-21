@@ -31,12 +31,6 @@ export default function ArticleBody({ bodyMarkdown }: { bodyMarkdown: string }) 
 
   return (
     <ReactMarkdown remarkPlugins={[remarkGfm]} components={{
-      // text({ children }) {
-      //   if (typeof children === "string") {
-      //     return <>{highlightText(children, query)}</>
-      //   }
-      //   return <>{children}</>
-      // }
       p:({ children }) => <p>{highlightChildren(children, query)}</p>,
       h1:({ children }) => <h1>{highlightChildren(children, query)}</h1>,
       h2:({ children }) => <h2>{highlightChildren(children, query)}</h2>,

@@ -20,7 +20,7 @@ export default function BackButton({ fallbackHref, fallbackLabel }: { fallbackHr
 
   return (
     <Button variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground" onClick={handleBack}>
-      <ArrowLeft w-4 h-4 />
+      <ArrowLeft className="w-4 h-4" />
       <span>{fallbackLabel}</span>
     </Button>
   )

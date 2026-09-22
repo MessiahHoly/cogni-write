@@ -43,6 +43,11 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", dmSans.variable)}
     >
       <head>
+        {/* <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985748083506964"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        /> */}
         <Script
           async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5985748083506964"
           crossOrigin="anonymous"

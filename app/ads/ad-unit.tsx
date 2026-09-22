@@ -22,11 +22,13 @@ export default function AdUnit({ slotId, format = "auto", className = "" }: {
   useEffect(() => {
     try {
       // (adsbygoogle = window.adsbygoogle || []).push({});
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      // (window.adsbygoogle = window.adsbygoogle || []).push({});
+      window.adsbygoogle = window.adsbygoogle || [];
+      window.adsbygoogle.push({});
     } catch (err) {
       console.error("AdsbyGoogle error:", err);
     } // Ignore errors if adsbygoogle is not defined
-  }, []);
+  }, [slotId]);
 
   return (
     <div className={`my-8 flex justify-center overflow-hidden min-h-25 bg-muted/10 rounded-lg p-2 ${className}`}>
@@ -36,7 +38,7 @@ export default function AdUnit({ slotId, format = "auto", className = "" }: {
         data-ad-slot={slotId}
         data-ad-format={format}
         data-full-width-responsive="true"
-        // data-adtest="on"
+        data-adtest="on"
       />
     </div>
   )

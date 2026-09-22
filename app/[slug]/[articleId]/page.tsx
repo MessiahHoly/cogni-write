@@ -1,9 +1,12 @@
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth/server";
 import { fetchArticleBySlugAndId } from "@/lib/data/article";
 import { fetchCommentsWithRepliesByArticleId } from "@/lib/data/comment";
-import { ArrowLeft, Calendar, MessageSquare } from "lucide-react";
-import Link from "next/link";
+import {
+  // ArrowLeft,
+  Calendar, MessageSquare
+} from "lucide-react";
+// import Link from "next/link";
 import { notFound } from "next/navigation";
 import CommentField from "./ui/comment-field";
 import { SignInField } from "@/app/ui/sign-in-field";
@@ -70,7 +73,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
         <hr className="my-4" />
 
         <AdUnit slotId="8811843407" format="auto" />
-        {/* <hr className="my-4" /> */}
 
         <div className="prose prose-stone dark:prose-invert max-w-none leading-relaxed text-foreground/90">
           <ArticleBody bodyMarkdown={bodyMarkdown} />

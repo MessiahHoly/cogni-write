@@ -6,23 +6,11 @@ type AdSensePushItem = Record<string, unknown>;
 
 declare global { interface Window { adsbygoogle?: AdSensePushItem[]; } }
 
-// type AdsByGoogleArray = Array<AdSensePushItem> & {
-//   push: (...items: AdSensePushItem[]) => number;
-// };
-
-// declare global {
-//   interface Window {
-//     adsbygoogle?: AdsByGoogleArray;
-//   }
-// }
-
 export default function AdUnit({ slotId, format = "auto", className = "" }: {
   slotId: string; format?: "auto" | "fluid" | "rectangle"; className?: string
 }) {
   useEffect(() => {
     try {
-      // (adsbygoogle = window.adsbygoogle || []).push({});
-      // (window.adsbygoogle = window.adsbygoogle || []).push({});
       window.adsbygoogle = window.adsbygoogle || [];
       window.adsbygoogle.push({});
     } catch (err) {
@@ -38,7 +26,8 @@ export default function AdUnit({ slotId, format = "auto", className = "" }: {
         data-ad-slot={slotId}
         data-ad-format={format}
         data-full-width-responsive="true"
-        data-adtest="on"
+        // data-adtest="on"
+        //TODO: data-adtest="on" is for testing purposes only. Remove it in production to serve real ads.
       />
     </div>
   )

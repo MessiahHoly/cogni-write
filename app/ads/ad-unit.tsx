@@ -21,6 +21,7 @@ export default function AdUnit({ slotId, format = "auto", className = "" }: {
 }) {
   useEffect(() => {
     try {
+      // (adsbygoogle = window.adsbygoogle || []).push({});
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (err) {
       console.error("AdsbyGoogle error:", err);
@@ -35,6 +36,7 @@ export default function AdUnit({ slotId, format = "auto", className = "" }: {
         data-ad-slot={slotId}
         data-ad-format={format}
         data-full-width-responsive="true"
+        // data-adtest="on"
       />
     </div>
   )

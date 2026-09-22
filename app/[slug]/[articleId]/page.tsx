@@ -77,7 +77,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
         </div>
       </article>
 
-      <AdUnit slotId="8811843407" format="auto" />
+      <AdUnit slotId="7315706559" format="auto" />
 
       <hr className="my-8" />
 

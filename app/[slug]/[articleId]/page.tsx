@@ -11,6 +11,7 @@ import OnboardingNameField from "./ui/onboarding-name-field";
 import CommentItem from "./ui/comment-item";
 import ArticleBody from "./ui/article-body";
 import BackButton from "./ui/back-button";
+import AdUnit from "@/app/ads/ad-unit";
 
 // TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
 // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
@@ -53,7 +54,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
   return (
     <main className="max-w-3xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
       <BackButton fallbackHref={`/${slug}`} fallbackLabel="Back" />
-      {/* <BackButton fallbackHref={`/${slug}`} fallbackLabel={`Back to ${article.contentEngine.topic}`} /> */}
 
       <article className="space-y-6">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -69,13 +69,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
 
         <hr className="my-4" />
 
+        <AdUnit slotId="8811843407" format="auto" />
+        {/* <hr className="my-4" /> */}
+
         <div className="prose prose-stone dark:prose-invert max-w-none leading-relaxed text-foreground/90">
-          {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {bodyMarkdown}
-          </ReactMarkdown> */}
           <ArticleBody bodyMarkdown={bodyMarkdown} />
         </div>
       </article>
+
+      <AdUnit slotId="8811843407" format="auto" />
 
       <hr className="my-8" />
 

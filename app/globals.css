@@ -136,3 +136,8 @@
     }
   }
 }
+
+/* Hide unfilled AdSense ads to prevent empty whitespace */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
+}

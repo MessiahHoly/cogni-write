@@ -19,8 +19,8 @@ export default function AdUnit({ slotId, format = "auto", className = "" }: {
   }, [slotId]);
 
   return (
-    <div className={`my-4 flex justify-center overflow-hidden w-full ${className}`}>
-    {/* <div className={`my-8 flex justify-center overflow-hidden min-h-25 bg-muted/10 rounded-lg p-2 ${className}`}> */}
+    <div className={`flex justify-center overflow-hidden w-full ${className}`}>
+    {/* <div className={`my-4 flex justify-center overflow-hidden w-full ${className}`}> */}
       <ins className="adsbygoogle"
         style={{ display: "block", width: "100%" }}
         data-ad-client="ca-pub-5985748083506964"

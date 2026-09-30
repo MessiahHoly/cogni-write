@@ -1,14 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { fetchContentEnginesWithLatestArticleAndCount } from "@/lib/data/content-engine"
 import { BookOpen, Calendar, ChevronRight } from "lucide-react"
-import { cacheLife, cacheTag } from "next/cache"
+import { cacheTag } from "next/cache"
 import Link from "next/link"
-
-//TODO: upgrade next.js
 
 export default async function TopicsDirectory() {
   'use cache'
-  // cacheLife('default')
   cacheTag('topics-directory')
 
   const contentEngines = await fetchContentEnginesWithLatestArticleAndCount()
@@ -29,7 +26,7 @@ export default async function TopicsDirectory() {
         <BookOpen className="h-5 w-5 text-primary" />
         Topics
       </h2>
-      
+
       <div className="grid gap-6 sm:grid-cols-2">
         {contentEngines.map(({ _count, articles, id, topic, slug }) => {
           const count = _count.articles;

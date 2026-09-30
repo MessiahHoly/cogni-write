@@ -1,13 +1,13 @@
+import { Suspense } from "react";
 import SearchBar from "./ui/search-bar";
-// import { Suspense } from "react";
-// import HomeContentSkeleton from "./ui/home-content-skeleton";
-// import HomeContent from "./ui/home-content";
 import SearchResults from "./ui/search-results";
 import TopicsDirectory from "./ui/topics-directory";
+import HomeContent from "./ui/home-content";
+import HomeContentSkeleton from "./ui/home-content-skeleton";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const { q } = await searchParams;
-  const query = q || '';
+  // const { q } = await searchParams;
+  // const query = q || '';
 
   return (
     <main className="w-full max-w-4xl mx-auto p-6 md:p-10 space-y-12 min-h-screen">
@@ -22,19 +22,18 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
           </p>
         </div>
 
-        {/* Embedded Search Input */}
         <SearchBar />
-        {/* <Suspense fallback={<HomeContentSkeleton />}>
-          <HomeContent query={query} />
-        </Suspense> */}
 
-        {/* DYNAMIC OR CACHED CONTENT AREA */}
+        {/* DYNAMIC OR CACHED CONTENT AREA
         {query ? (
           <SearchResults query={query} />
         ) : (
           <TopicsDirectory />
-        )}
+        )} */}
       </div>
+      <Suspense fallback={<HomeContentSkeleton />}>
+        <HomeContent searchParams={searchParams} />
+      </Suspense>
     </main>
   );
 }

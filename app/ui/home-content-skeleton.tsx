@@ -10,4 +10,4 @@ export default function HomeContentSkeleton() {
   )
  }
 
- //TODO: remove HomeContent and HomeContentSkelton
+ //TODO: remove HomeContent

@@ -6,8 +6,20 @@ import CommentCard from "../search/ui/comment-card";
 import { BookOpen, Calendar, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import SearchResults from "./search-results";
+import TopicsDirectory from "./topics-directory";
 
-export default async function HomeContent({ query }: { query: string }) {
+export default async function HomeContent({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
+  // export default async function HomeContent({ query }: { query: string }) {
+  const { q } = await searchParams
+  const query = q || ''
+
+  if (query) {
+    return <SearchResults query={query} />
+  }
+
+  return <TopicsDirectory />
+
   const [contentEngines, searchResults] = await Promise.all([
     fetchContentEnginesWithLatestArticleAndCount(),
     query ? searchAll(query) : Promise.resolve({ articles: [], comments: [] })

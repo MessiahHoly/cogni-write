@@ -8,7 +8,7 @@ import TopicContent from "./ui/topic-content";
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   return (
-    <main className="max-w-4xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
+    <main className="w-full max-w-4xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
       <Button asChild variant="ghost" size="sm" className="gap-2 -ml-2 text-muted-foreground">
         <Link href="/">
           <ArrowLeft className="w-4 h-4" />

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 export default function TopicPageSkeleton() {
   return (
     <div className="w-full space-y-6 animate-pulse">
+    {/* <div className="w-full space-y-6 animate-pulse"> */}
       {/* Header section matching TopicContent structure */}
       <div className="w-full border-b pb-5">
         <div className="h-9 w-64 bg-muted rounded mt-2" />

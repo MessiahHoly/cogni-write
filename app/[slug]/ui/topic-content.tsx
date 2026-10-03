@@ -18,14 +18,14 @@ export default async function TopicContent({ params }: { params: Promise<{ slug:
   }
 
   return (
-    <div className="space-y-6">
+    <div className="w-full min-w-0 space-y-6">
       <div className="border-b pb-5">
         <h1 className="text-3xl font-extrabold tracking-tight capitalize mt-2">
           {contentEngine.topic}
         </h1>
       </div>
 
-      <div className="space-y-6">
+      <div className="w-full min-w-0 space-y-6">
         {contentEngine.articles.length === 0 ? (
           <div className="border border-dashed rounded-xl p-12 text-center space-y-3 bg-muted/10">
             <p className="text-muted-foreground font-medium">No articles generated yet.</p>
@@ -34,9 +34,9 @@ export default async function TopicContent({ params }: { params: Promise<{ slug:
             </p>
           </div>
         ) : (
-          <div className="grid gap-4">
+          <div className="grid w-full min-w-0 gap-4">
             {contentEngine.articles.map((article) => (
-              <Card key={article.id} className="hover:border-primary/40 transition-colors">
+              <Card key={article.id} className="w-full min-w-0 hover:border-primary/40 transition-colors">
                 <CardHeader className="pb-3">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1.5 font-medium">

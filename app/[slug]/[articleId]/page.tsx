@@ -1,24 +1,16 @@
-// import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth/server";
 import { fetchArticleBySlugAndId } from "@/lib/data/article";
 import { fetchCommentsWithRepliesByArticleId } from "@/lib/data/comment";
-import {
-  // ArrowLeft,
-  Calendar, MessageSquare
-} from "lucide-react";
-// import Link from "next/link";
+import { Calendar, MessageSquare } from "lucide-react";
 import { notFound } from "next/navigation";
-import CommentField from "./ui/comment-field";
-import { SignInField } from "@/app/ui/sign-in-field";
-import OnboardingNameField from "./ui/onboarding-name-field";
-import CommentItem from "./ui/comment-item";
 import ArticleBody from "./ui/article-body";
 import BackButton from "./ui/back-button";
 import AdUnit from "@/app/ads/ad-unit";
+import { Suspense } from "react";
+import DiscussionSection from "./ui/discussion-section";
+import DiscussionSkeleton from "./ui/discussion-skeleton";
 
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
-export const instant = false;
+// export const instant = false;
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string, articleId: string }> }) => {
   const { slug, articleId } = await params
@@ -51,8 +43,8 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
   const parsedTitle = textLines[0].replace(/^#\s*/, "") || "Untitled Article"
   const bodyMarkdown = textLines.slice(1).join("\n").trim() || "No content available."
 
-  const currentPath = `/${slug}/${articleId}`
-  const isAuthenticated = Boolean(session?.user.id)
+  // const currentPath = `/${slug}/${articleId}`
+  // const isAuthenticated = Boolean(session?.user.id)
 
   return (
     <main className="max-w-3xl mx-auto p-6 md:p-10 space-y-8 min-h-screen">
@@ -83,7 +75,11 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
 
       <hr className="my-8" />
 
-      <section id="discussion" className="space-y-8">
+      <Suspense fallback={<DiscussionSkeleton />}>
+        <DiscussionSection slug={slug} articleId={articleId} />
+      </Suspense>
+
+      {/* <section id="discussion" className="space-y-8">
         <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-primary" />
           Discussion ({comments.length})
@@ -111,7 +107,12 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
             ))
           )}
         </div>
-      </section>
+      </section> */}
     </main>
   );
 }
+
+//TODO: When generating a comment, you should send all the comments/replies so that the reply from Cogni sounds right. 
+// cogni-write/lib/data/comment.ts at main · MessiahHoly/cogni-write
+
+//TODO: Use "use cache: remote"

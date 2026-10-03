@@ -121,6 +121,8 @@ Follow these strict formatting and style guidelines:
 }
 
 export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(async () => {
+  "use cache: remote"
+  
   return prisma.article.findUnique({
     where: { id, contentEngine: { slug } },
     include: { contentEngine: true }

@@ -120,14 +120,22 @@ Follow these strict formatting and style guidelines:
   return { data: finalPipelineResult.data }
 }
 
-export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(async () => {
-  "use cache: remote"
+export const fetchArticleBySlugAndId = (slug: string) => (id: string) => {
+  'use cache: remote'
   
   return prisma.article.findUnique({
     where: { id, contentEngine: { slug } },
     include: { contentEngine: true }
   })
-})()
+}
+// export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(async () => {
+//   'use cache: remote'
+  
+//   return prisma.article.findUnique({
+//     where: { id, contentEngine: { slug } },
+//     include: { contentEngine: true }
+//   })
+// })()
 
 
 export const searchArticles = async (formattedQuery: string) => {

@@ -18,9 +18,6 @@ export const verifyRouteAuth = (request: Request) => {
   const isManualAuth = expectedKey && apiKey === expectedKey
   const isVercelCronAuth = expectedVercelCronSecret && vercelCronSecret === `Bearer ${expectedVercelCronSecret}`
 
-  // console.log(isManualAuth, isVercelCronAuth, apiKey, vercelCronSecret, expectedKey, expectedVercelCronSecret)
-  // console.log((!isManualAuth && !isVercelCronAuth))
-
   if (!isManualAuth && !isVercelCronAuth) {
     return NextResponse.json({ error: "Unauthorised" }, { status: 401 })
   }

@@ -17,6 +17,8 @@ export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.fi
 });
 
 export const fetchCommentsWithRepliesByArticleId = async (articleId: string) => {
+  "use cache: remote";
+  
   const rawComments = await prisma.comment.findMany({
     where: { articleId },
     include: { user: { select: { name: true, image: true } } },

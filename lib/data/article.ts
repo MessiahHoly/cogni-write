@@ -120,7 +120,7 @@ Follow these strict formatting and style guidelines:
   return { data: finalPipelineResult.data }
 }
 
-export const fetchArticleBySlugAndId = (slug: string) => (id: string) => {
+export const fetchArticleBySlugAndId = (slug: string) => async (id: string) => {
   'use cache: remote'
   
   return prisma.article.findUnique({

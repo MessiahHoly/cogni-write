@@ -1,6 +1,4 @@
-import { getSession } from "@/lib/auth/server";
-import { fetchArticleBySlugAndId } from "@/lib/data/article";
-import { fetchCommentsWithRepliesByArticleId } from "@/lib/data/comment";
+import { fetchArticleBySlugAndId, fetchArticles } from "@/lib/data/article";
 import { Calendar } from "lucide-react";
 import { notFound } from "next/navigation";
 import ArticleBody from "./ui/article-body";
@@ -9,6 +7,12 @@ import AdUnit from "@/app/ads/ad-unit";
 import { Suspense } from "react";
 import DiscussionSection from "./ui/discussion-section";
 import DiscussionSkeleton from "./ui/discussion-skeleton";
+
+export const generateStaticParams = async () => {
+  "use cache: remote"
+
+  return await fetchArticles()
+}
 
 export const generateMetadata = async ({ params }: { params: Promise<{ slug: string, articleId: string }> }) => {
   const { slug, articleId } = await params

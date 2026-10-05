@@ -5,7 +5,6 @@ import { prisma } from "./prisma";
 import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai";
 import { ai } from "./ai";
 import { CommentNode, CreateCommentInput } from "../schemas/comment";
-import { formatQuery } from "../utils";
 
 export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.findMany({
   where: { articleId, commentId: null },

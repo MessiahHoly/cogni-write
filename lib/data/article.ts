@@ -2,10 +2,8 @@ import { z } from "zod"
 import { CreateArticleSchema } from "../schemas/article"
 import { prisma } from "./prisma"
 import { ContentEngine } from "@/generated/prisma/browser"
-import { cache } from "react"
 import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai"
 import { ai } from "./ai"
-import { formatQuery } from "../utils"
 
 const fetchArticleByContentEngineId = (contentEngineId: string) => {
   return prisma.article.findMany({
@@ -144,4 +142,15 @@ export const searchArticles = async (formattedQuery: string) => {
     orderBy: { _relevance: { fields: ['topic', 'content'], search: formattedQuery, sort: 'desc' } },
     include: { contentEngine: { select: { slug: true } } },
   })
+}
+  
+export const fetchArticles = async () => {
+    const articles = await prisma.article.findMany({
+    select: { id: true, contentEngine: { select: { slug: true } } },
+  })
+
+  return articles.map((article) => ({
+    slug: article.contentEngine.slug,
+    articleId: article.id,
+  }))
 }

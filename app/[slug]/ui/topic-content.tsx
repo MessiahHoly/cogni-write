@@ -6,7 +6,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 export default async function TopicContent({ params }: { params: Promise<{ slug: string }> }) {
-  'use cache'
+  'use cache: remote'
   
   const { slug } = await params
   cacheTag(`topic-${slug}`)

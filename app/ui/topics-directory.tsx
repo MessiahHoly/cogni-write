@@ -5,7 +5,7 @@ import { cacheTag } from "next/cache"
 import Link from "next/link"
 
 export default async function TopicsDirectory() {
-  'use cache'
+  'use cache: remote'
   cacheTag('topics-directory')
 
   const contentEngines = await fetchContentEnginesWithLatestArticleAndCount()

@@ -40,7 +40,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
     return notFound()
   }
 
-  // const [comments, session] = await Promise.all([fetchCommentsWithRepliesByArticleId(articleId), getSession()])
   const textLines = article.content.split("\n")
   const parsedTitle = textLines[0].replace(/^#\s*/, "") || "Untitled Article"
   const bodyMarkdown = textLines.slice(1).join("\n").trim() || "No content available."

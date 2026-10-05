@@ -126,15 +126,6 @@ export const fetchArticleBySlugAndId = (slug: string) => async (id: string) => {
     include: { contentEngine: true }
   })
 }
-// export const fetchArticleBySlugAndId = (slug: string) => (id: string) => cache(async () => {
-//   'use cache: remote'
-  
-//   return prisma.article.findUnique({
-//     where: { id, contentEngine: { slug } },
-//     include: { contentEngine: true }
-//   })
-// })()
-
 
 export const searchArticles = async (formattedQuery: string) => {
   return await prisma.article.findMany({

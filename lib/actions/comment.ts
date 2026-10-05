@@ -7,7 +7,6 @@ import { createComment } from "../data/comment"
 import { z } from 'zod'
 
 export const createCommentAction = async (articleId: string, commentId: string | null, initialState: unknown, formData: FormData) => {
-  // console.log("createCommentAction called with articleId:", articleId, "commentId:", commentId, "formData:", formData)
 
   const [session] = await Promise.all([getSession()])
 
@@ -17,8 +16,6 @@ export const createCommentAction = async (articleId: string, commentId: string |
 
   const result = CreateCommentSchema.safeParse({ articleId, commentId, content: formData.get("content") })
   
-  // console.log("createCommentAction result:", result)
-
   if (!result.success) {
     return { error: z.prettifyError(result.error) }
   }
@@ -27,7 +24,8 @@ export const createCommentAction = async (articleId: string, commentId: string |
 
   try {
     const comment = await createComment(session.user.id)(data)
-    revalidatePath(`${comment.article.contentEngine.slug}/${data.articleId}`)
+    revalidatePath(`/${comment.article.contentEngine.slug}/${data.articleId}`)
+    // revalidatePath(`${comment.article.contentEngine.slug}/${data.articleId}`)
 
     return { success: true }
   } catch (error) {

@@ -8,26 +8,6 @@ import { CommentNode } from "@/lib/schemas/comment";
 import { useSearchParams } from "next/navigation";
 import { highlightText } from "@/lib/utils";
 
-// const highlightText = (text: string, query?: string) => {
-//   if (!query || !query.trim()) return text;
-
-//   // Escape special regex characters in user search query
-//   const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-//   const regex = new RegExp(`(${escapedQuery})`, 'gi');
-//   const parts = text.split(regex);
-
-//   return parts.map((part, index) =>
-//     part.toLowerCase() === query.toLocaleLowerCase() ? (
-//       <mark key={index}
-//         className="bg-yellow-200 text-black dark:bg-yellow-500/30 dark:text-yellow-200 rounded-sm px-0.5 font-medium">
-//         {part}
-//       </mark>
-//     ) : (
-//       part
-//     )
-//   );
-// }
-
 export default function CommentItem({ comment, isAuthenticated }: { comment: CommentNode, isAuthenticated: boolean }) {
   const [isReplying, setIsReplying] = useState(false);
   const [isTargeted, setIsTargeted] = useState(false);

@@ -1,13 +1,10 @@
 import { Suspense } from "react";
 import SearchBar from "./ui/search-bar";
-import SearchResults from "./ui/search-results";
-import TopicsDirectory from "./ui/topics-directory";
 import HomeContent from "./ui/home-content";
 import HomeContentSkeleton from "./ui/home-content-skeleton";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  // const { q } = await searchParams;
-  // const query = q || '';
+  // 'use cache: remote'
 
   return (
     <main className="w-full max-w-4xl mx-auto p-6 md:p-10 space-y-12 min-h-screen">
@@ -21,15 +18,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
             Explore automated, deep-dive articles curated across specialized niche topics.
           </p>
         </div>
-
         <SearchBar />
-
-        {/* DYNAMIC OR CACHED CONTENT AREA
-        {query ? (
-          <SearchResults query={query} />
-        ) : (
-          <TopicsDirectory />
-        )} */}
       </div>
       <Suspense fallback={<HomeContentSkeleton />}>
         <HomeContent searchParams={searchParams} />

@@ -3,7 +3,6 @@ import { Calendar } from "lucide-react";
 import { notFound } from "next/navigation";
 import ArticleBody from "./ui/article-body";
 import BackButton from "./ui/back-button";
-import AdUnit from "@/app/ads/ad-unit";
 import { Suspense } from "react";
 import DiscussionSection from "./ui/discussion-section";
 import DiscussionSkeleton from "./ui/discussion-skeleton";
@@ -62,7 +61,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
 
         <hr className="my-4" />
 
-        <AdUnit slotId="8811843407" format="auto" />
+        {/* <AdUnit slotId="8811843407" format="auto" /> */}
 
         <div className="prose prose-stone dark:prose-invert max-w-none leading-relaxed text-foreground/90">
           <Suspense fallback={<div>{bodyMarkdown}</div>}>
@@ -71,7 +70,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
         </div>
       </article>
 
-      <AdUnit slotId="7315706559" format="auto" />
+      {/* <AdUnit slotId="7315706559" format="auto" /> */}
 
       <hr className="my-8" />
 

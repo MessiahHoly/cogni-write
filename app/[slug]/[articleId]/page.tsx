@@ -81,6 +81,3 @@ export default async function Page({ params }: { params: Promise<{ slug: string,
     </main>
   );
 }
-
-//TODO: When generating a comment, you should send all the comments/replies so that the reply from Cogni sounds right. 
-// cogni-write/lib/data/comment.ts at main · MessiahHoly/cogni-write

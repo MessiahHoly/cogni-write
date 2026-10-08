@@ -1,23 +1,21 @@
-import {
-  Prisma
-} from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "./prisma";
 import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai";
 import { ai } from "./ai";
 import { CommentNode, CreateCommentInput } from "../schemas/comment";
 
-export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.findMany({
-  where: { articleId, commentId: null },
-  include: {
-    user: { select: { name: true, image: true } },
-    comments: { include: { user: { select: { name: true, image: true } } }, orderBy: { createdAt: 'asc' } }
-  },
-  orderBy: { createdAt: 'desc', },
-});
+// export const fetchCommentsByArticleId = (articleId: string) => prisma.comment.findMany({
+//   where: { articleId, commentId: null },
+//   include: {
+//     user: { select: { name: true, image: true } },
+//     comments: { include: { user: { select: { name: true, image: true } } }, orderBy: { createdAt: 'asc' } }
+//   },
+//   orderBy: { createdAt: 'desc', },
+// });
 
 export const fetchCommentsWithRepliesByArticleId = async (articleId: string) => {
   "use cache: remote";
-  
+
   const rawComments = await prisma.comment.findMany({
     where: { articleId },
     include: { user: { select: { name: true, image: true } } },
@@ -56,10 +54,42 @@ RULES:
 5. Direct your response to the specific question or point the user raised in their comment.
 `;
 
-export const attemptGeneration = (systemInstruction: string) => (comment: Prisma.CommentGetPayload<{
-  select: { user: { select: { name: true } }, article: true, content: true }
+const formatCommentTree = (commentNodes: CommentNode[]) => (depth = 0): string => {
+  return commentNodes.map(comment => {
+    const indent = '  '.repeat(depth)
+    const prefix = depth === 0 ? '' : `└── `
+    const line = `${indent}${prefix}${comment.user.name}: "${comment.content}"`
+
+    const childrenText = comment.comments.length > 0 ? `\n${formatCommentTree(comment.comments)(depth + 1)}` : ''
+    return `${line}${childrenText}`
+  }).join('\n')
+}
+
+const excludeCommentNode = (targetId: string) => (nodes: readonly CommentNode[]): CommentNode[] =>
+  nodes
+    .filter(node => node.id !== targetId)
+    .map(node => ({
+      ...node,
+      comments: excludeCommentNode(targetId)(node.comments)
+    }))
+
+export const attemptGeneration = (systemInstruction: string) => (allComments: CommentNode[]) => (comment: Prisma.CommentGetPayload<{
+  select: { id: true, user: { select: { name: true } }, article: true, content: true }
 }>) => async (model: GemmaModel) => {
+  // export const attemptGeneration = (systemInstruction: string) => (comment: Prisma.CommentGetPayload<{
+  //   select: { user: { select: { name: true } }, article: true, content: true }
+  // }>) => async (model: GemmaModel) => {
   const { article, content, user } = comment
+
+  // Remove the target comment from the context tree to prevent duplicate display
+  const priorComments = excludeCommentNode(comment.id)(allComments)
+  const formattedTree = formatCommentTree(priorComments)()
+  const contextSection = formattedTree.trim()
+    ? `FYI: here are the other comments and replies on this article for prior context:\n${formattedTree}`
+    : 'FYI: This is the first comment on this article.'
+
+  // console.log(`Formatted comment tree for context:\n${contextSection}`)
+
   const contents = `${user.name} left a comment on your article.
 
 Article Details:
@@ -72,7 +102,10 @@ Write a direct reply as Cogni (the author of the article) responding to ${user.n
 
 CRITICAL:
 - Speak as the author of the article.
-- Output ONLY Cogni's direct, conversational reply as plain text.`
+- Output ONLY Cogni's direct, conversational reply as plain text.
+
+${contextSection}
+`
 
   console.log(`Attempting generation with ${model}...`)
 
@@ -105,9 +138,11 @@ export const fetchLatestCommentByUserId = (userId: string) => prisma.comment.fin
 export const fetchFirstComment = () => prisma.comment.findFirst({ orderBy: { createdAt: 'desc' }, take: 1 })
 
 export const generateComment = async (comment: Prisma.CommentGetPayload<{
-  select: { user: { select: { name: true } }, article: true, content: true }
+  select: { user: { select: { name: true } }, article: true, content: true, id: true }
 }>) => {
-  const attemptGenerationWithSystemInstructionAndComment = attemptGeneration(COGNI_SYSTEM_INSTRUCTION)(comment)
+  const allComments = await fetchCommentsWithRepliesByArticleId(comment.article.id)
+  const attemptGenerationWithSystemInstructionAndComment = attemptGeneration(COGNI_SYSTEM_INSTRUCTION)(allComments)(comment)
+  // const attemptGenerationWithSystemInstructionAndComment = attemptGeneration(COGNI_SYSTEM_INSTRUCTION)(comment)
 
   type PipelineResult = Awaited<ReturnType<typeof attemptGenerationWithSystemInstructionAndComment>>
   const initialAccumulator = Promise.resolve<PipelineResult>({ error: 'No attempts made yet.' })

@@ -6,7 +6,11 @@ import { prisma } from "./prisma";
 
 export const fetchContentEngine = () => prisma.contentEngine.findFirst()
 
-export const fetchContentEngines = () => prisma.contentEngine.findMany({ include: { articles: { orderBy: { updatedAt: 'desc' } } } })
+export const fetchContentEngines = async () => {
+  'use cache: remote'
+
+  return prisma.contentEngine.findMany({ include: { articles: { orderBy: { updatedAt: 'desc' } } } })
+}
 
 export const fetchContentEnginesWithLatestArticleAndCount = () => prisma.contentEngine.findMany({
   include: {

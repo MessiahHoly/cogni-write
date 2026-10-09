@@ -1,23 +1,20 @@
 import { getSession } from "@/lib/auth/server";
 import { SignInField } from "../ui/sign-in-field";
-import {
-  fetchContentEngines
-} from "@/lib/data/content-engine";
-import {
-  ArrowRight, FileText,
-} from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import CreateEngineDialog from "./ui/content-engine-dialog";
-import ContentEngineDialog from "./ui/content-engine-dialog";
+import { Suspense } from "react";
+import ContentEngineGrid from "./ui/content-engine-grid";
+import GridSkeleton from "./ui/grid-skeleton";
 
-// TODO: Cache Components adoption. Refactor this route so this opt-out can be removed.
-// See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
+
+// 1. Dynamic Check: Evaluate session per request
+// We will keep this as this is an admin dashboard. 
 export const instant = false;
 
 export default async function Page() {
-  const [session, contentEngines] = await Promise.all([getSession(), fetchContentEngines()])
+  // const [session, contentEngines] = await Promise.all([getSession(), fetchContentEngines()])
+  
+  // 1. Dynamic Check: Evaluate session per request
+  const session = await getSession()
 
   if (!session) {
     return (
@@ -47,38 +44,10 @@ export default async function Page() {
         <CreateEngineDialog />
       </div>
 
-      {/* Grid Display of Content Engines */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {contentEngines?.map((engine) => (
-          <Card key={engine.id} className="hover:shadow-md transition-shadow flex flex-col justify-between">
-            <CardHeader className="space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono bg-muted px-2 py-1 rounded text-muted-foreground">
-                  /{engine.slug}
-                </span>
-                <ContentEngineDialog contentEngine={engine} />
-              </div>
-              <CardTitle className="text-xl capitalize pt-2">{engine.topic}</CardTitle>
-              <CardDescription>
-                Created on {new Date(engine.createdAt).toLocaleDateString()}
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="pt-0 flex items-center justify-between border-t mt-4 p-6 bg-muted/30">
-              <span className="text-sm text-muted-foreground flex items-center gap-1.5">
-                <FileText className="h-4 w-4 text-primary" />
-                {/* Adjust according to whether your fetch relation count is loaded */}
-                {engine.articles?.length || 0} Articles
-              </span>
-              <Button asChild variant="ghost" size="sm" className="gap-1">
-                <Link href={`/${engine.slug}`}>
-                  Workspace <ArrowRight className="h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      {/* 2. Stream & Render Cached Data inside Suspense boundary */}
+      <Suspense fallback={<GridSkeleton />}>
+        <ContentEngineGrid />
+      </Suspense>
     </main>
   );
 }

@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { searchAll } from "@/lib/data/search"
-import ArticleCard from "../search/ui/article-card"
-import CommentCard from "../search/ui/comment-card"
+import ArticleCard from "./article-card"
+import CommentCard from "./comment-card"
 
 export default async function SearchResults({ query }: { query: string }) {
   const { articles, comments } = await searchAll(query)

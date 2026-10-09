@@ -27,7 +27,7 @@ export default function AdUnit({ slotId, format = "auto", className = "" }: {
         data-ad-format={format}
         data-full-width-responsive="true"
         // data-adtest="on"
-        //TODO: data-adtest="on" is for testing purposes only. Remove it in production to serve real ads.
+        // data-adtest="on" is for testing purposes only. Remove it in production to serve real ads.
       />
     </div>
   )

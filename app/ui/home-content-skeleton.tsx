@@ -9,5 +9,3 @@ export default function HomeContentSkeleton() {
     </div>
   )
  }
-
- //TODO: remove HomeContent

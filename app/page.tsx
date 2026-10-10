@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import SearchBar from "./ui/search-bar";
 import HomeContent from "./ui/home-content";
 import HomeContentSkeleton from "./ui/home-content-skeleton";
+import RecentArticles from "./ui/recent-articles";
+import RecentArticlesSkeleton from "./ui/recent-articles-skeleton";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   // 'use cache: remote'
@@ -20,6 +22,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ q
         </div>
         <SearchBar />
       </div>
+      <Suspense fallback={<RecentArticlesSkeleton />}>
+        <RecentArticles />
+      </Suspense>
       <Suspense fallback={<HomeContentSkeleton />}>
         <HomeContent searchParams={searchParams} />
       </Suspense>

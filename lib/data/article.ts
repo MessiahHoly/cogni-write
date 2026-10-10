@@ -4,6 +4,7 @@ import { prisma } from "./prisma"
 import { ContentEngine } from "@/generated/prisma/browser"
 import { GemmaModel, MODELS_FALLBACK_CHAIN } from "../schemas/ai"
 import { ai } from "./ai"
+import { cacheLife, cacheTag } from "next/cache"
 
 const fetchArticleByContentEngineId = (contentEngineId: string) => {
   return prisma.article.findMany({
@@ -51,6 +52,8 @@ const attemptGeneration =
       if (!text) return {
         error: 'Text is empty.',
       }
+
+      //TODO: insert revalidateTag("articles-24h")
 
       return await createArticle(contentEngine)(model)(text)
     } catch (error) {
@@ -120,7 +123,7 @@ Follow these strict formatting and style guidelines:
 
 export const fetchArticleBySlugAndId = (slug: string) => async (id: string) => {
   'use cache: remote'
-  
+
   return prisma.article.findUnique({
     where: { id, contentEngine: { slug } },
     include: { contentEngine: true }
@@ -134,9 +137,9 @@ export const searchArticles = async (formattedQuery: string) => {
     include: { contentEngine: { select: { slug: true } } },
   })
 }
-  
+
 export const fetchArticles = async () => {
-    const articles = await prisma.article.findMany({
+  const articles = await prisma.article.findMany({
     select: { id: true, contentEngine: { select: { slug: true } } },
   })
 
@@ -144,4 +147,18 @@ export const fetchArticles = async () => {
     slug: article.contentEngine.slug,
     articleId: article.id,
   }))
+}
+
+export const fetchLatestArticlesLast24Hours = async () => {
+  'use cache: remote'
+  cacheTag('articles-24h')
+  cacheLife('hours')
+
+  const gte = new Date(Date.now() - 24 * 60 * 60 * 1000)
+
+  return prisma.article.findMany({
+    where: { createdAt: { gte } },
+    orderBy: { createdAt: 'desc' },
+    include: { contentEngine: { select: { slug: true, topic: true } } },
+  })
 }

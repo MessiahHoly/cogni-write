@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server"
-import {
-  generateAndSaveArticle,
-} from "@/lib/data/article"
+import { generateAndSaveArticle } from "@/lib/data/article"
 import { prisma } from "@/lib/data/prisma"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, updateTag } from "next/cache"
 import { verifyRouteAuth } from "@/lib/auth/server"
 
 const handleArticleGeneration = async (request: Request) => {
@@ -24,8 +22,13 @@ const handleArticleGeneration = async (request: Request) => {
     })
   )
 
-  revalidatePath("/")
-  contentEngines.map(({ slug }) => revalidatePath(`/${slug}`))
+  const hasSuccessfulGenerations = results.some(result => 'data' in result)
+
+  if (hasSuccessfulGenerations) {
+    updateTag("articles-24h")
+    revalidatePath("/")
+    contentEngines.map(({ slug }) => revalidatePath(`/${slug}`))
+  }
 
   return NextResponse.json(results)
 }

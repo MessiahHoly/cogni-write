@@ -53,8 +53,6 @@ const attemptGeneration =
         error: 'Text is empty.',
       }
 
-      //TODO: insert revalidateTag("articles-24h")
-
       return await createArticle(contentEngine)(model)(text)
     } catch (error) {
       return { error: error instanceof Error ? error.message : 'Article generation by AI failed.' }

@@ -6,8 +6,6 @@ import RecentArticles from "./ui/recent-articles";
 import RecentArticlesSkeleton from "./ui/recent-articles-skeleton";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  // 'use cache: remote'
-
   return (
     <main className="w-full max-w-4xl mx-auto p-6 md:p-10 space-y-12 min-h-screen">
       {/* Hero Banner Area - Renders instantly */}

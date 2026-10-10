@@ -27,7 +27,7 @@ export default async function RecentArticles() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {articles.map(({ id, contentEngine, createdAt,content }) => (
+        {articles.map(({ id, contentEngine, createdAt, content }) => (
           <Card key={id} className="flex flex-col justify-between hover:shadow-md transition-shadow">
             <CardHeader className="space-y-2">
               <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -41,7 +41,6 @@ export default async function RecentArticles() {
               </div>
               <CardTitle className="line-clamp-2 text-lg">
                 <Link href={`/${contentEngine.slug}/${id}`} className="hover:underline">
-                {/* TODO: Extract title from content, currently using first line of content as title */}
                   {content.split('\n')[0]?.replace(/^#\s*/, '').trim() || "Untitled"}
                 </Link>
               </CardTitle>
@@ -49,7 +48,8 @@ export default async function RecentArticles() {
 
             <CardContent className="pt-0">
               <CardDescription className="line-clamp-3 mb-4">
-                {content}
+                {/* {content} */}
+                {content.split("\n").slice(1).join(" ").replace(/[#*`_-]/g, '').trim()}
               </CardDescription>
               <Button asChild variant="ghost" size="sm" className="w-full justify-between gap-1">
                 <Link href={`/${contentEngine.slug}/${id}`}>

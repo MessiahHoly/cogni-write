@@ -26,7 +26,8 @@ export default async function RecentArticles() {
         </div>
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2">
+        {/* <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"> */}
         {articles.map(({ id, contentEngine, createdAt, content }) => (
           <Card key={id} className="flex flex-col justify-between hover:shadow-md transition-shadow">
             <CardHeader className="space-y-2">

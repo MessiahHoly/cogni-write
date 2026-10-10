@@ -5,6 +5,8 @@ import HomeContentSkeleton from "./ui/home-content-skeleton";
 import RecentArticles from "./ui/recent-articles";
 import RecentArticlesSkeleton from "./ui/recent-articles-skeleton";
 
+//TODO: when search, hide recent articles and show search results instead. This will require a new component to handle search results and a state to manage the search query.
+
 export default async function Home({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   return (
     <main className="w-full max-w-4xl mx-auto p-6 md:p-10 space-y-12 min-h-screen">
